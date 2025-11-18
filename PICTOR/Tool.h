@@ -75,15 +75,50 @@ public :
 
 class ToolRectangle : public Tool
 {
+	V2 Pstart;
+
 public:
 
 	ToolRectangle() : Tool() {}
+
+
 	void processEvent(const Event& E, Model& Data) override
 	{
+		if (E.Type == EventType::MouseDown && E.info == "0") // left mouse button pressed
+		{
+			if (currentState == State::WAIT)
+			{
+				// interactive drawing
+				Pstart = Data.currentMousePos;
+				currentState = State::INTERACT;
+				return;
+			}
+		}
 
+		if (E.Type == EventType::MouseUp && E.info == "0") // left mouse button released
+		{
+			if (currentState == State::INTERACT)
+			{
+				// add object in the scene
+				V2 P2 = Data.currentMousePos;
+				auto newObj = make_shared<ObjRectangle>(Data.drawingOptions, Pstart, P2);
+				Data.LObjets.push_back(newObj);
+				currentState = State::WAIT;
+				return;
+			}
+		}
 	}
 
 	void draw(Graphics& G, const Model& Data) override
 	{
+		V2 P;
+		V2 size;
+			if (currentState == State::INTERACT)
+				getPLH(Pstart, Data.currentMousePos,P,size );// Convertie les point diagonneaux en taille et point de depart du rectangle (utulisation prof ObjGeom.h l36)
+				G.drawRectangle(P, size, Data.drawingOptions.borderColor_, Data.drawingOptions.thickness_);//Voir si faut la meme couleur avant et apres creation
 	}
 };
+
+
+
+

@@ -66,18 +66,23 @@ void processEvent(const Event& Ev, Model & Data)
 	Ev.print(); // Debug
 
 	// MouseMove event updates x,y coordinates
-	if (Ev.Type == EventType::MouseMove ) Data.currentMousePos = V2(Ev.x, Ev.y);
+	if (Ev.Type == EventType::MouseMove)
+	{
+		Data.currentMousePos = V2(Ev.x, Ev.y);
+	}
 	 
 
 	// detect a mouse click on the tools icons
 
 	V2 P = Data.currentMousePos;
 	for (auto B : Data.LButtons)
-		if (Ev.Type == EventType::MouseDown && P.isInside(B->getPos(),B->getSize()) )
+	{
+		if (Ev.Type == EventType::MouseDown && P.isInside(B->getPos(), B->getSize()))
 		{
-			B->manageEvent(Ev,Data);
+			B->manageEvent(Ev, Data);
 			return;
 		}
+	}
 
 
 	// send event to the activated tool
