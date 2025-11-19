@@ -25,6 +25,9 @@ int main(int argc, char* argv[])
 void bntToolSegmentClick(Model& Data)   { Data.currentTool = make_shared<ToolSegment>(); }
 void bntToolRectangleClick(Model& Data) { Data.currentTool = make_shared<ToolRectangle>(); }
 void bntToolCercleClick(Model& Data) { Data.currentTool = make_shared<ToolCercle>(); }
+void bntToolRAZClick(Model& Data) { Data.LObjets = {}; } //Remet la liste des objet à 0
+
+
 
 void initApp(Model& App)
 {
@@ -51,6 +54,10 @@ void initApp(Model& App)
 	App.LButtons.push_back(B3);
 	x += s;
 
+	// button cercle
+	auto B4 = make_shared<Button>("Outil RAZ", V2(x, 0), V2(s, s), "outil_delete.png", bntToolRAZClick);
+	App.LButtons.push_back(B4);
+	x += s;
 
 
 	// put two objets in the scene
