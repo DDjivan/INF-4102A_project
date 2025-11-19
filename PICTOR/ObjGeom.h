@@ -62,3 +62,25 @@ public:
 		G.drawLine(P1_, P2_, drawInfo_.borderColor_, drawInfo_.thickness_);
 	}
 };
+
+
+
+
+class ObjCercle : public ObjGeom
+{
+public:
+	V2 P1_;
+	V2 P2_;
+
+	ObjCercle(ObjAttr  drawInfo, V2 P1, V2 P2) : ObjGeom(drawInfo)
+	{
+		P1_ = P1;
+		P2_ = P2;
+	}
+
+	void draw(Graphics& G) override
+	{
+		const float r = (P1_ - P2_).norm();
+		G.drawCircle(P1_, r, drawInfo_.borderColor_, drawInfo_.thickness_);
+	}
+};

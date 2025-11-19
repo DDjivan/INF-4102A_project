@@ -122,3 +122,55 @@ public:
 
 
 
+
+
+
+////////////////////////////////////////////////////////////////////
+
+
+
+
+class ToolCercle : public Tool
+{
+	V2 Pstart;
+public:
+
+	ToolCercle() : Tool() {}
+	void processEvent(const Event& E, Model& Data) override
+	{
+		if (E.Type == EventType::MouseDown && E.info == "0") // left mouse button pressed
+		{
+			if (currentState == State::WAIT)
+			{
+				// interactive drawing
+				Pstart = Data.currentMousePos;
+				currentState = State::INTERACT;
+				return;
+			}
+		}
+
+		if (E.Type == EventType::MouseUp && E.info == "0") // left mouse button released
+		{
+			if (currentState == State::INTERACT)
+			{
+				// add object in the scene
+				V2 P2 = Data.currentMousePos;
+				auto newObj = make_shared<ObjCercle>(Data.drawingOptions, Pstart, P2);
+				Data.LObjets.push_back(newObj);
+				currentState = State::WAIT;
+				return;
+			}
+		}
+	}
+
+
+	void draw(Graphics& G, const Model& Data) override
+	{
+		if (currentState == State::INTERACT)
+		{
+			float r = (Pstart - Data.currentMousePos).norm();
+			G.drawCircle(Pstart, r, Data.drawingOptions.borderColor_, Data.drawingOptions.thickness_);
+		}
+	}
+
+};

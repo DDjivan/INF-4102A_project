@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
 
 void bntToolSegmentClick(Model& Data)   { Data.currentTool = make_shared<ToolSegment>(); }
 void bntToolRectangleClick(Model& Data) { Data.currentTool = make_shared<ToolRectangle>(); }
+void bntToolCercleClick(Model& Data) { Data.currentTool = make_shared<ToolCercle>(); }
 
 void initApp(Model& App)
 {
@@ -45,6 +46,13 @@ void initApp(Model& App)
 	x += s;
 
 
+	// button cercle
+	auto B3 = make_shared<Button>("Outil Cercle", V2(x, 0), V2(s, s), "outil_ellipse.png", bntToolCercleClick);
+	App.LButtons.push_back(B3);
+	x += s;
+
+
+
 	// put two objets in the scene
 
 	ObjAttr DrawOpt1 = ObjAttr(Color::Cyan, true, Color::Green, 6);
@@ -54,6 +62,10 @@ void initApp(Model& App)
 	ObjAttr DrawOpt2 = ObjAttr(Color::Red, true, Color::Blue, 5);
 	auto newObj2 = make_shared<ObjRectangle>(DrawOpt2, V2(500, 300), V2(600, 600));
 	App.LObjets.push_back(newObj2);
+
+	ObjAttr DrawOpt3 = ObjAttr(Color::Blue, true, Color::Red, 5);
+	auto newObj3 = make_shared<ObjCercle>(DrawOpt3, V2(600, 700), V2(650, 700));
+	App.LObjets.push_back(newObj3);
 }
 
 /////////////////////////////////////////////////////////////////////////
