@@ -29,7 +29,7 @@ namespace GL
 	void AskScreenRedraw();
 };
 
-void myglEvent(Event& V)
+void myglEvent(const Event& V)
 {
 	
 	processEvent(V, Data);
