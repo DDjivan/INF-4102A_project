@@ -29,6 +29,40 @@ void bntToolRAZClick(Model& Data) { Data.LObjets = {}; } //Remet la liste des ob
 void bntToolSelectionClick(Model& Data){Data.currentTool = make_shared<ToolSelection>();}
 
 
+void bntToolDevantClick(Model& Data)
+{
+	if (Data.ObjSelectionne == nullptr) return;
+
+
+	for (int k = 0; k < Data.LObjets.size() - 1; k++)
+	{
+		if (Data.LObjets[k] == Data.ObjSelectionne)
+		{
+			auto x = Data.LObjets[k];
+			Data.LObjets[k] = Data.LObjets[k + 1];
+			Data.LObjets[k + 1] = x;
+		}
+	}
+}
+
+
+void bntToolDerriereClick(Model& Data)
+{
+	if (Data.ObjSelectionne == nullptr) return;
+
+
+	for (int k = 1; k < Data.LObjets.size(); k++)
+	{
+		if (Data.LObjets[k] == Data.ObjSelectionne)
+		{
+			auto x = Data.LObjets[k];
+			Data.LObjets[k] = Data.LObjets[k - 1];
+			Data.LObjets[k - 1] = x;
+		}
+	}
+}
+
+
 void initApp(Model& App)
 {
 	// choose default tool
@@ -49,19 +83,29 @@ void initApp(Model& App)
 	x += s;
 
 
-	// button cercle
+	// boutton cercle
 	auto B3 = make_shared<Button>("Outil Cercle", V2(x, 0), V2(s, s), "outil_ellipse.png", bntToolCercleClick);
 	App.LButtons.push_back(B3);
 	x += s;
 
-	// button suprimer
+	// boutton suprimer
 	auto B4 = make_shared<Button>("Outil RAZ", V2(x, 0), V2(s, s), "outil_delete.png", bntToolRAZClick);
 	App.LButtons.push_back(B4);
 	x += s;
 
-	// button selectionner 
+
+	// boutton devant
 	auto B5 = make_shared<Button>("Outil Selectionner", V2(x, 0), V2(s, s), "outil_move.png", bntToolSelectionClick);
 	App.LButtons.push_back(B5);
+	x += s;
+
+	// boutton devant
+	auto B6 = make_shared<Button>("Outil Selectionner", V2(x, 0), V2(s, s), "outil_up.png", bntToolDevantClick);
+	App.LButtons.push_back(B6);
+	x += s;
+
+	auto B7 = make_shared<Button>("Outil Selectionner", V2(x, 0), V2(s, s), "outil_down.png", bntToolDerriereClick);
+	App.LButtons.push_back(B7);
 	x += s;
 
 

@@ -97,7 +97,8 @@ public:
 	}
 
 
-	void getHitbox(V2& P, V2& size) override {
+	void getHitbox(V2& P, V2& size) override 
+	{
 		float r = (P1_ - P2_).norm();
 		size = V2(2 * r, 2 * r);
 		P = P1_ - V2(r, r);
