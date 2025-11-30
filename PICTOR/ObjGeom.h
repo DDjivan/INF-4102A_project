@@ -15,6 +15,8 @@ public :
 	ObjGeom(ObjAttr  drawInfo) : drawInfo_(drawInfo)   {  }
 
 	virtual void draw(Graphics & G) {}
+
+	virtual void getHitbox(V2& P, V2& size){}
 };
 
 
@@ -40,6 +42,11 @@ public :
 
 		G.drawRectangle(P, size, drawInfo_.borderColor_, false, drawInfo_.thickness_);
 	}
+
+	void getHitbox(V2& P, V2& size) override 
+	{
+		getPLH(P1_, P2_, P, size);
+	}
 };
 
 
@@ -60,6 +67,11 @@ public:
 		V2 P, size;
 	 
 		G.drawLine(P1_, P2_, drawInfo_.borderColor_, drawInfo_.thickness_);
+	}
+
+	void getHitbox(V2& P, V2& size) override 
+	{
+		getPLH(P1_, P2_, P, size);
 	}
 };
 
@@ -82,5 +94,12 @@ public:
 	{
 		const float r = (P1_ - P2_).norm();
 		G.drawCircle(P1_, r, drawInfo_.borderColor_, drawInfo_.thickness_);
+	}
+
+
+	void getHitbox(V2& P, V2& size) override {
+		float r = (P1_ - P2_).norm();
+		size = V2(2 * r, 2 * r);
+		P = P1_ - V2(r, r);
 	}
 };

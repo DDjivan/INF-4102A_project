@@ -177,4 +177,42 @@ public:
 
 
 
+class ToolSelection : public Tool
+{
+public:
+	ToolSelection() : Tool() {}
+
+	void processEvent(const Event& E, Model& Data) override
+	{
+		if (E.Type == EventType::MouseDown && E.info == "0")
+		{
+			Data.ObjSelectionne = nullptr;
+
+			for (auto& obj : Data.LObjets)
+			{
+				V2 P, size;
+				obj->getHitbox(P, size);
+
+				if (Data.currentMousePos.isInside(P, size))
+				{
+					Data.ObjSelectionne = obj;
+				}
+			}
+		}
+	}
+
+	void draw(Graphics& G, const Model& Data) override
+	{
+		// Affichage visuel de la sélection
+		if (Data.ObjSelectionne != nullptr)
+		{
+			V2 P, size;
+			Data.ObjSelectionne->getHitbox(P, size);
+			G.drawRectangle(P, size, Color::Magenta, false, 10);
+		}
+	}
+};
+
+
+
 

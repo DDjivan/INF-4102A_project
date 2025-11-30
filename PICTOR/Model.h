@@ -30,6 +30,8 @@ class Model
 
 	vector< shared_ptr<Button> > LButtons;
 
+	shared_ptr<ObjGeom> ObjSelectionne = nullptr;
+
 	Model()
 	{
 		initApp(*this);
