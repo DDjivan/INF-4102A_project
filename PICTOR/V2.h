@@ -1,6 +1,7 @@
 /* Copyright (c) 2024 Lilian Buzer - All rights reserved - */
 #pragma once
 #include <ostream>
+#include <cmath>
 
 struct V2 
 {
