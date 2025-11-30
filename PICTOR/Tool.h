@@ -180,6 +180,7 @@ public:
 class ToolSelection : public Tool
 {
 public:
+	
 	ToolSelection() : Tool() {}
 
 	void processEvent(const Event& E, Model& Data) override

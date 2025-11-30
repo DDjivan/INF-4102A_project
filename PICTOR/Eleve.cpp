@@ -25,7 +25,28 @@ int main(int argc, char* argv[])
 void bntToolSegmentClick(Model& Data)   { Data.currentTool = make_shared<ToolSegment>(); }
 void bntToolRectangleClick(Model& Data) { Data.currentTool = make_shared<ToolRectangle>(); }
 void bntToolCercleClick(Model& Data) { Data.currentTool = make_shared<ToolCercle>(); }
-void bntToolRAZClick(Model& Data) { Data.LObjets = {}; } //Remet la liste des objet à 0
+
+
+
+void bntToolRAZClick(Model& Data) { 
+	
+	if (Data.ObjSelectionne == nullptr)
+	{
+		Data.LObjets = {};
+	}
+	for (int k = 0; k < Data.LObjets.size(); k++)
+	{
+		if (Data.LObjets[k] == Data.ObjSelectionne)
+		{
+			Data.LObjets.erase(Data.LObjets.begin() + k);
+		}
+	}
+} 
+
+
+
+
+
 void bntToolSelectionClick(Model& Data){Data.currentTool = make_shared<ToolSelection>();}
 
 
