@@ -30,7 +30,7 @@ public:
 class ToolSegment : public Tool
 {
 	V2 Pstart;
-public : 
+public :
 
 	ToolSegment() : Tool() {}
 	void processEvent(const Event& E, Model& Data) override
@@ -41,7 +41,7 @@ public :
 			{
 				// interactive drawing
 				Pstart = Data.currentMousePos;
-				currentState = State::INTERACT;  
+				currentState = State::INTERACT;
 				return;
 			}
 		}
@@ -68,6 +68,7 @@ public :
 	}
 
 };
+
 
 
 ////////////////////////////////////////////////////////////////////
@@ -180,7 +181,7 @@ public:
 class ToolSelection : public Tool
 {
 public:
-	
+
 	ToolSelection() : Tool() {}
 
 	void processEvent(const Event& E, Model& Data) override
@@ -204,7 +205,7 @@ public:
 
 	void draw(Graphics& G, const Model& Data) override
 	{
-		// Affichage visuel de la s�lection
+		// Affichage visuel de la s�lection
 		if (Data.ObjSelectionne != nullptr)
 		{
 			V2 P, size;
@@ -216,11 +217,65 @@ public:
 
 
 
+class ToolLignePolygonale : public Tool
+{
+	std::vector<V2> points;
 
+public:
+	ToolLignePolygonale() : Tool()
+	{
+		return;
+	}
 
+	void processEvent(const Event& E, Model& Data) override
+    {
+		// commencer
+        if (E.Type == EventType::MouseDown && E.info == "0")  // LMB appuyé
+        {
+            points.push_back(Data.currentMousePos);
+			currentState = State::INTERACT;
+        }
 
+		// finaliser
+        if (
+			// (E.Type == EventType::KeyDown && E.info == "\n")  // Enter appuyé
+			// (ne fonctionne pas, donc j'ai choisi une flèche directionnelle) ↓
+			(E.Type == EventType::KeyDown && E.info == "RIGHT")  // Right appuyé
+			|| (E.Type == EventType::MouseDown && E.info == "2")  // RMB appuyé
+		)
+        {
+            if (points.size() >= 2)  // au moins deux points sont nécessaires
+            {
+                for (int i = 0; i < points.size() - 1; i++)
+                {
+                    auto newSegment = make_shared<ObjSegment>(Data.drawingOptions, points.at(i), points.at(i+1));
+                    Data.LObjets.push_back(newSegment);
+                }
+            }
+			points.clear();
+			currentState = State::WAIT;
+        }
 
+		// annuler
+        if (E.Type == EventType::MouseDown && E.info == "1")  // MMB appuyé
+        {
+            points.clear();
+            // drawingStarted = false;
+            currentState = State::WAIT;
+        }
 
+		return;
+    }
 
-
-
+    void draw(Graphics& G, const Model& Data) override
+    {
+        if (currentState == State::INTERACT) {
+            for (int i = 0; i < points.size() - 1; i++)
+            {
+                G.drawLine(points.at(i), points.at(i+1), Data.drawingOptions.borderColor_, Data.drawingOptions.thickness_);
+            }
+            G.drawLine(points.back(), Data.currentMousePos, Data.drawingOptions.borderColor_, Data.drawingOptions.thickness_);
+        }
+		return;
+    }
+};

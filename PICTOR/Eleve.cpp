@@ -156,7 +156,15 @@ void btnToggleFond(Model& Data)
     return;
 }
 
+void btnToolLignePolygonale(Model& Data)
+{
+    Data.currentTool = make_shared<ToolLignePolygonale>();
+    return;
+}
 
+
+
+//----------------------------------------------------------------------------//
 
 void initApp(Model& App)
 {
@@ -218,6 +226,11 @@ void initApp(Model& App)
 
     auto BB = make_shared<FondButton>("Basculer la présence du fond", V2(x, 0), V2(s, s), btnToggleFond);
 	App.LButtons.push_back(BB);
+	x += s;
+
+    // Étape 7
+    auto BC = make_shared<Button>("Outil Ligne Polygonale", V2(x, 0), V2(s, s), "outil_polygone.png", btnToolLignePolygonale);
+	App.LButtons.push_back(BC);
 	x += s;
 
 
