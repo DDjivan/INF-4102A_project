@@ -49,6 +49,64 @@ public :
 
 		return ss.str();
 	}
+
+
+
+	template <typename T>
+	T stringToValue(const std::string& str, const std::string& key)
+	{
+		std::string value = "";
+
+		auto start = str.find(key);
+		if (start != std::string::npos) {
+			start += key.length() + 2; // Move past the key and ":"
+			auto end = str.find(',', start);
+			if (end == std::string::npos) {
+				end = str.find('}', start); // Handle end of object
+				}
+			value = str.substr(start, end - start);
+		}
+
+		if constexpr (std::is_same<T, std::string>::value) {
+			return value;
+		}
+		if constexpr (std::is_same<T, int>::value) {
+			return std::stoi(value);
+		}
+		// if (std::is_same<T, float>::value) {
+		// 	return std::stof(value);
+		// }
+		if constexpr (std::is_same<T, bool>::value) {
+			return (value == "1");
+		}
+		if constexpr (std::is_same<T, Color>::value) {
+			float R, G, B, A;
+			// sscanf prend un const char* pour le 1er arg
+    		sscanf(value.c_str(), "(%f,%f,%f,%f)", &R, &G, &B, &A);
+			return Color(R, G, B, A);
+		}
+		if constexpr (std::is_same<T, V2>::value) {
+			int x, y;
+    		sscanf(value.c_str(), "(%d,%d)", &x, &y);
+			return V2(x, y);
+		}
+
+		throw std::invalid_argument("Type non pris en charge ! \n");
+	}
+
+	ObjAttr extractDrawInfo(const std::string& str)
+	{
+		ObjAttr drawInfo;
+		std::string drawInfoString = stringToValue<std::string>(str, "\"drawInfo_\"");
+
+		drawInfo.borderColor_ = stringToValue<Color>(drawInfoString, "borderColor_");
+		drawInfo.interiorColor_ = stringToValue<Color>(drawInfoString, "interiorColor_");
+		drawInfo.thickness_ = stringToValue<int>(drawInfoString, "thickness_");
+		drawInfo.isFilled_ = stringToValue<bool>(drawInfoString, "isFilled_");
+
+		return drawInfo;
+	}
+
 };
 
 
@@ -94,6 +152,14 @@ public :
 
         return ss.str();
     }
+
+
+	ObjRectangle(const std::string& serializedString)
+    {
+        drawInfo_ = extractDrawInfo(serializedString);
+        P1_ = stringToValue<V2>(serializedString, "P1_");
+        P2_ = stringToValue<V2>(serializedString, "P2_");
+    }
 };
 
 
@@ -134,6 +200,13 @@ public:
 		ss << "}";
 
         return ss.str();
+    }
+
+	ObjSegment(const std::string& serializedString)
+    {
+        drawInfo_ = extractDrawInfo(serializedString);
+        P1_ = stringToValue<V2>(serializedString, "P1_");
+        P2_ = stringToValue<V2>(serializedString, "P2_");
     }
 };
 
@@ -179,5 +252,12 @@ public:
 		ss << "}";
 
         return ss.str();
+    }
+
+	ObjCercle(const std::string& serializedString)
+    {
+        drawInfo_ = extractDrawInfo(serializedString);
+        P1_ = stringToValue<V2>(serializedString, "P1_");
+        P2_ = stringToValue<V2>(serializedString, "P2_");
     }
 };
