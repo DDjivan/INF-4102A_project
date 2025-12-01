@@ -10,8 +10,9 @@
 using namespace std;
 
 // declaration used to avoid cyclic dependency
-class Tool; 
-class Button;
+class Tool;
+// class Button;
+class AbstractButton;
 class Model;
 void initApp(Model& Data);
 
@@ -28,7 +29,8 @@ class Model
 
 	vector< shared_ptr<ObjGeom> > LObjets;
 
-	vector< shared_ptr<Button> > LButtons;
+	// vector< shared_ptr<Button> > LButtons;
+	vector< shared_ptr<AbstractButton> > LButtons;
 
 	shared_ptr<ObjGeom> ObjSelectionne = nullptr;
 
