@@ -106,21 +106,23 @@ public:
 
 class EpaisseurButton : public AbstractButton
 {
-	int index = 3;
-	const std::array<int, 4> epaisseurs = {1, 2, 3, 4};
+	int index = 1;
+	const std::array<int, 4> epaisseurs = {1, 3, 5, 9};
+
+	V2 start = V2(getPos().x			   +8, getPos().y + getSize().y/2);
+	V2 end   = V2(getPos().x + getSize().x -8, getPos().y + getSize().y/2);
 
 public:
-
-    EpaisseurButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack) :
-        AbstractButton(myName, pos, size, callBack) {
+	EpaisseurButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack) :
+		AbstractButton(myName, pos, size, callBack) {
 		return;
 	}
 
-	const int getCurrentThickness() {
+	const int getEpaisseur() {
 		return epaisseurs.at(index);
 	}
 
-	void switchEpaisseur()
+	void nextEpaisseur()
 	{
 		index = (index+1) % epaisseurs.size();
 		return;
@@ -133,18 +135,16 @@ public:
 		G.drawRectangle(getPos(), getSize(), Color::Gray, false,2);
 		G.drawRectangle(getPos() + V2(2,2), getSize()-V2(4,4), Color::Black, false,2);
 
-		G.drawLine(getPos()+V2(4,4), getSize()-V2(8,8), Color::Red, epaisseurs.at(index));
+		G.drawLine(start, end, Color::Gray, getEpaisseur());
 		return;
 	}
 };
 
-
 class TemplateButton : public AbstractButton
 {
 public:
-
-    TemplateButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack) :
-        AbstractButton(myName, pos, size, callBack) {
+	TemplateButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack) :
+		AbstractButton(myName, pos, size, callBack) {
 		return;
 	}
 

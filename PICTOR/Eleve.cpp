@@ -90,10 +90,14 @@ void btnToolSwitchThickness(Model& Data)
     );
 
     if (epaisseurButton) {
-        epaisseurButton->switchEpaisseur();
+        epaisseurButton->nextEpaisseur();
+        Data.drawingOptions.thickness_ = epaisseurButton->getEpaisseur();
+
         std::cout << "Nouvelle épaisseur : ";
-        std::cout << epaisseurButton->getCurrentThickness() << "\n";
+        std::cout << epaisseurButton->getEpaisseur() << "\n";
     }
+
+    return;
 }
 
 
