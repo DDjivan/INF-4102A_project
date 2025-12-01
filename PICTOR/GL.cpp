@@ -3,7 +3,8 @@
 #include "GlutImport.h"
 #include "Graphics.h"
 #include "V2.h"
-#include "color.h"
+// #include "color.h"
+#include "Color.h"
 #include "Event.h"
 #include "Model.h"
 
@@ -28,7 +29,7 @@ namespace GL
 	void AskScreenRedraw();
 };
 
-void myglEvent(Event& V)
+void myglEvent(const Event& V)
 {
 	
 	processEvent(V, Data);

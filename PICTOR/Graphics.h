@@ -3,7 +3,9 @@
 #include <string>
 #include <vector>
 #include "V2.h"
-#include "color.h"
+// #include "color.h"
+#include "Color.h"
+#include <cmath>
 
 using namespace std;
 

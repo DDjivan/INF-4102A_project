@@ -3,7 +3,7 @@
 #include <string>
 #include "V2.h"
 #include "Graphics.h"
-#include "Event.h" 
+#include "Event.h"
 #include "Model.h"
 #include "Button.h"
 #include "Tool.h"
@@ -28,8 +28,8 @@ void bntToolCercleClick(Model& Data) { Data.currentTool = make_shared<ToolCercle
 
 
 
-void bntToolRAZClick(Model& Data) { 
-	
+void bntToolRAZClick(Model& Data) {
+
 	if (Data.ObjSelectionne == nullptr)
 	{
 		Data.LObjets = {};
@@ -41,7 +41,7 @@ void bntToolRAZClick(Model& Data) {
 			Data.LObjets.erase(Data.LObjets.begin() + k);
 		}
 	}
-} 
+}
 
 
 
@@ -82,6 +82,20 @@ void bntToolDerriereClick(Model& Data)
 		}
 	}
 }
+
+void btnToolSwitchThickness(Model& Data)
+{
+    auto epaisseurButton = dynamic_cast<EpaisseurButton*>(
+        Data.LButtons.at(9).get()
+    );
+
+    if (epaisseurButton) {
+        epaisseurButton->switchEpaisseur();
+        std::cout << "Nouvelle épaisseur : ";
+        std::cout << epaisseurButton->getCurrentThickness() << "\n";
+    }
+}
+
 
 
 void initApp(Model& App)
@@ -129,6 +143,23 @@ void initApp(Model& App)
 	App.LButtons.push_back(B7);
 	x += s;
 
+	// Étape 6
+	auto B8 = make_shared<TemplateButton>("Choisir la couleur de trait suivante", V2(x, 0), V2(s, s), bntToolSelectionClick);
+	App.LButtons.push_back(B8);
+	x += s;
+
+    auto B9 = make_shared<TemplateButton>("Choisir la couleur de fond suivante", V2(x, 0), V2(s, s), bntToolSelectionClick);
+	App.LButtons.push_back(B9);
+	x += s;
+
+    auto BA = make_shared<EpaisseurButton>("Choisir l'épaisseur suivante", V2(x, 0), V2(s, s), btnToolSwitchThickness);
+	App.LButtons.push_back(BA);
+	x += s;
+
+    auto BB = make_shared<TemplateButton>("Basculer la présence du fond", V2(x, 0), V2(s, s), bntToolSelectionClick);
+	App.LButtons.push_back(BB);
+	x += s;
+
 
 	// put two objets in the scene
 
@@ -149,7 +180,7 @@ void initApp(Model& App)
 //
 //		Event management
 
- 
+
 void processEvent(const Event& Ev, Model & Data)
 {
 	Ev.print(); // Debug
@@ -159,7 +190,7 @@ void processEvent(const Event& Ev, Model & Data)
 	{
 		Data.currentMousePos = V2(Ev.x, Ev.y);
 	}
-	 
+
 
 	// detect a mouse click on the tools icons
 
@@ -176,24 +207,24 @@ void processEvent(const Event& Ev, Model & Data)
 
 	// send event to the activated tool
 	Data.currentTool->processEvent(Ev,Data);
-	
-	 
+
+
 }
 
 
- 
+
 /////////////////////////////////////////////////////////////////////////
 //
 //     Drawing elements
- 
- 
+
+
 void drawCursor(Graphics& G, const Model& D)
 {
- 
+
 
 	V2 P = D.currentMousePos;
 	int r = 7;
-	
+
 	Color c = Color::Black;
 	G.drawLine(P + V2(r, 1), P + V2(-r, 1), c);
 	G.drawLine(P + V2(r,-1), P + V2(-r,-1), c);
@@ -206,7 +237,7 @@ void drawCursor(Graphics& G, const Model& D)
 
 	G.drawStringFontMono(P + V2(20, 0), "Hello", 20, 1, Color::Yellow);
 }
- 
+
 
 void drawApp(Graphics& G, const Model & D)
 {
@@ -228,7 +259,7 @@ void drawApp(Graphics& G, const Model & D)
 	drawCursor(G, D);
 }
 
- 
+
 
 
 
