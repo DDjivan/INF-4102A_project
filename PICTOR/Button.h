@@ -106,21 +106,23 @@ public:
 
 class EpaisseurButton : public AbstractButton
 {
-	int index = 3;
-	const std::array<int, 4> epaisseurs = {1, 2, 3, 4};
+	int index = 1;
+	const std::array<int, 4> epaisseurs = {1, 3, 5, 9};
+
+	V2 start = V2(getPos().x			   +8, getPos().y + getSize().y/2);
+	V2 end   = V2(getPos().x + getSize().x -8, getPos().y + getSize().y/2);
 
 public:
-
-    EpaisseurButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack) :
-        AbstractButton(myName, pos, size, callBack) {
+	EpaisseurButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack) :
+		AbstractButton(myName, pos, size, callBack) {
 		return;
 	}
 
-	const int getCurrentThickness() {
+	const int getEpaisseur() {
 		return epaisseurs.at(index);
 	}
 
-	void switchEpaisseur()
+	void nextEpaisseur()
 	{
 		index = (index+1) % epaisseurs.size();
 		return;
@@ -133,18 +135,110 @@ public:
 		G.drawRectangle(getPos(), getSize(), Color::Gray, false,2);
 		G.drawRectangle(getPos() + V2(2,2), getSize()-V2(4,4), Color::Black, false,2);
 
-		G.drawLine(getPos()+V2(4,4), getSize()-V2(8,8), Color::Red, epaisseurs.at(index));
+		G.drawLine(start, end, Color::Gray, getEpaisseur());
 		return;
 	}
 };
 
+class CouleurButton : public AbstractButton
+{
+	int index = 0;
+	const std::array<Color, 7> couleurs = {
+		ColorFromHex(0xfa7966),  // red
+		ColorFromHex(0xd59300),  // bronze
+		ColorFromHex(0x6eb141),  // lime
+		ColorFromHex(0x00b59d),  // turquoise
+		ColorFromHex(0x00afd1),  // sky
+		ColorFromHex(0xa490ff),  // lavender
+		ColorFromHex(0xe77ac6),  // byzantium
+	};
+
+	V2 start = V2(getPos().x			   + 8, getPos().y + getSize().y*1/4);
+	V2 end   = V2(             getSize().x -16,              getSize().y*2/4);
+
+	const int epaisseur = 5;
+	const bool fond;
+
+public:
+	CouleurButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack, bool fond) :
+		AbstractButton(myName, pos, size, callBack), fond(fond) {
+		return;
+	}
+
+	const Color getCouleur() const {
+		return couleurs.at(index);
+	}
+
+	void nextCouleur()
+	{
+		index = (index+1) % couleurs.size();
+		return;
+	}
+
+	void draw(Graphics & G) override
+	{
+		G.drawRectangle(getPos(), getSize(), Color::White, true,2);
+
+		G.drawRectangle(getPos(), getSize(), Color::Gray, false,2);
+		G.drawRectangle(getPos() + V2(2,2), getSize()-V2(4,4), Color::Black, false,2);
+
+		if (fond) {
+			G.drawRectangle(start, end, getCouleur(), true, 0);
+		} else {
+			G.drawRectangle(start, end, getCouleur(), false, epaisseur);
+		}
+
+		return;
+	}
+};
+
+class FondButton : public AbstractButton
+{
+	bool fondActivé;
+
+	V2 start = V2(getPos().x			   + 8, getPos().y + getSize().y*1/4);
+	V2 end   = V2(             getSize().x -16,              getSize().y*2/4);
+
+	const int epaisseur = 5;
+
+public:
+	FondButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack) :
+		AbstractButton(myName, pos, size, callBack) {
+		return;
+	}
+
+	const bool getFondActivé() const {
+		return fondActivé;
+	}
+
+	void toggleFond()
+	{
+		fondActivé = !fondActivé;
+		return;
+	}
+
+	void draw(Graphics & G) override
+	{
+		G.drawRectangle(getPos(), getSize(), Color::White, true,2);
+
+		G.drawRectangle(getPos(), getSize(), Color::Gray, false,2);
+		G.drawRectangle(getPos() + V2(2,2), getSize()-V2(4,4), Color::Black, false,2);
+
+		if (fondActivé) {
+			G.drawRectangle(start, end, Color::Gray, true, 0);
+		}
+
+		G.drawRectangle(start, end, Color::Gray, false, epaisseur);
+
+		return;
+	}
+};
 
 class TemplateButton : public AbstractButton
 {
 public:
-
-    TemplateButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack) :
-        AbstractButton(myName, pos, size, callBack) {
+	TemplateButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack) :
+		AbstractButton(myName, pos, size, callBack) {
 		return;
 	}
 

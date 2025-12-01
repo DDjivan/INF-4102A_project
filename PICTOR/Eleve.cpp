@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "Button.h"
 #include "Tool.h"
+#include <fstream>
 
 using namespace std;
 
@@ -85,18 +86,127 @@ void bntToolDerriereClick(Model& Data)
 
 void btnToolSwitchThickness(Model& Data)
 {
+    const int btn_index = 9;
     auto epaisseurButton = dynamic_cast<EpaisseurButton*>(
-        Data.LButtons.at(9).get()
+        Data.LButtons.at(btn_index).get()
     );
 
     if (epaisseurButton) {
-        epaisseurButton->switchEpaisseur();
+        epaisseurButton->nextEpaisseur();
+        Data.drawingOptions.thickness_ = epaisseurButton->getEpaisseur();
+
         std::cout << "Nouvelle épaisseur : ";
-        std::cout << epaisseurButton->getCurrentThickness() << "\n";
+        std::cout << epaisseurButton->getEpaisseur() << "\n";
     }
+
+    return;
+}
+
+void btnSwitchColorTrait(Model& Data)
+{
+    const int btn_index = 7;
+    auto button = dynamic_cast<CouleurButton*>(
+        Data.LButtons.at(btn_index).get()
+    );
+
+    if (button) {
+        button->nextCouleur();
+        Data.drawingOptions.borderColor_ = button->getCouleur();
+
+        std::cout << "Nouvelle couleur de trait. \n";
+    }
+
+    return;
+}
+
+void btnSwitchColorFond(Model& Data)
+{
+    const int btn_index = 8;
+    auto button = dynamic_cast<CouleurButton*>(
+        Data.LButtons.at(btn_index).get()
+    );
+
+    if (button) {
+        button->nextCouleur();
+        Data.drawingOptions.interiorColor_ = button->getCouleur();
+
+        std::cout << "Nouvelle couleur de fond. \n";
+    }
+
+    return;
+}
+
+void btnToggleFond(Model& Data)
+{
+    const int btn_index = 10;
+    auto button = dynamic_cast<FondButton*>(
+        Data.LButtons.at(btn_index).get()
+    );
+
+    if (button) {
+        button->toggleFond();
+        Data.drawingOptions.isFilled_ = button->getFondActivé();
+
+        if (button->getFondActivé()) {
+            std::cout << "Fond activé. \n ";
+        } else {
+            std::cout << "Fond désactivé. \n ";
+        }
+    }
+
+    return;
+}
+
+void btnToolLignePolygonale(Model& Data)
+{
+    Data.currentTool = make_shared<ToolLignePolygonale>();
+    return;
 }
 
 
+
+void btnSave(Model& Data)
+{
+    std::cout << "btnSave(.) ! \n";
+
+    int n = Data.LObjets.size();
+
+    std::string nom_fichier = "sauvegarde.json";
+    std::ofstream ss(nom_fichier);
+
+    if (!ss.is_open()) {
+        std::cerr << "Erreur en ouvrant (écriture) : `" << nom_fichier << "` .\n";
+        return;
+    }
+
+    ss << "{\n";
+    for (int i = 0; i < n; i++)
+	{
+        ss << "\"" << i+1 << "\":{";
+		ss << Data.LObjets.at(i)->Serialize();
+        ss << "}";
+        if (i < n-1) {
+            ss << ",";
+        }
+        ss << "\n";
+	}
+    ss << "}\n";
+
+    ss.close();
+    std::cout << "Sauvegarde effectuée dans `./" << nom_fichier << "`. \n";
+
+    return;
+}
+
+void btnLoad(Model& Data)
+{
+    std::cout << "btnLoad(.) ! \n";
+    return;
+}
+
+
+
+//----------------------------------------------------------------------------//
 
 void initApp(Model& App)
 {
@@ -144,11 +254,11 @@ void initApp(Model& App)
 	x += s;
 
 	// Étape 6
-	auto B8 = make_shared<TemplateButton>("Choisir la couleur de trait suivante", V2(x, 0), V2(s, s), bntToolSelectionClick);
+	auto B8 = make_shared<CouleurButton>("Choisir la couleur de trait suivante", V2(x, 0), V2(s, s), btnSwitchColorTrait, false);
 	App.LButtons.push_back(B8);
 	x += s;
 
-    auto B9 = make_shared<TemplateButton>("Choisir la couleur de fond suivante", V2(x, 0), V2(s, s), bntToolSelectionClick);
+    auto B9 = make_shared<CouleurButton>("Choisir la couleur de fond suivante", V2(x, 0), V2(s, s), btnSwitchColorFond, true);
 	App.LButtons.push_back(B9);
 	x += s;
 
@@ -156,8 +266,22 @@ void initApp(Model& App)
 	App.LButtons.push_back(BA);
 	x += s;
 
-    auto BB = make_shared<TemplateButton>("Basculer la présence du fond", V2(x, 0), V2(s, s), bntToolSelectionClick);
+    auto BB = make_shared<FondButton>("Basculer la présence du fond", V2(x, 0), V2(s, s), btnToggleFond);
 	App.LButtons.push_back(BB);
+	x += s;
+
+    // Étape 7
+    auto BC = make_shared<Button>("Outil Ligne Polygonale", V2(x, 0), V2(s, s), "outil_polygone.png", btnToolLignePolygonale);
+	App.LButtons.push_back(BC);
+	x += s;
+
+    // Étape 8
+    auto BD = make_shared<Button>("Outil Save", V2(x, 0), V2(s, s), "new/outil_save2.png", btnSave);
+	App.LButtons.push_back(BD);
+	x += s;
+
+    auto BE = make_shared<Button>("Outil Load", V2(x, 0), V2(s, s), "new/outil_load2.png", btnLoad);
+	App.LButtons.push_back(BE);
 	x += s;
 
 
