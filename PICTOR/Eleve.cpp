@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "Button.h"
 #include "Tool.h"
+#include <fstream>
 
 using namespace std;
 
@@ -162,18 +163,28 @@ void btnToolLignePolygonale(Model& Data)
     return;
 }
 
+
+
 void btnSave(Model& Data)
 {
     std::cout << "btnSave(.) ! \n";
 
     int n = Data.LObjets.size();
 
-    std::stringstream ss;
+    std::string nom_fichier = "sauvegarde.json";
+    std::ofstream ss(nom_fichier);
+
+    if (!ss.is_open()) {
+        std::cerr << "Erreur en ouvrant (écriture) : `" << nom_fichier << "` .\n";
+        return;
+    }
 
     ss << "{\n";
     for (int i = 0; i < n; i++)
 	{
+        ss << "\"" << i+1 << "\":{";
 		ss << Data.LObjets.at(i)->Serialize();
+        ss << "}";
         if (i < n-1) {
             ss << ",";
         }
@@ -181,7 +192,8 @@ void btnSave(Model& Data)
 	}
     ss << "}\n";
 
-    std::cout << ss.str();
+    ss.close();
+    std::cout << "Sauvegarde effectuée dans `./" << nom_fichier << "`. \n";
 
     return;
 }

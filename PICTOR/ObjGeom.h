@@ -27,23 +27,23 @@ public :
 
 		std::stringstream ss;
 
-		ss << "drawInfo_:{";
+		ss << "\"drawInfo_\":{";
 
 		R = drawInfo_.borderColor_.R;
 		G = drawInfo_.borderColor_.G;
 		B = drawInfo_.borderColor_.B;
 		A = drawInfo_.borderColor_.A;
-		ss << "borderColor_:(" << R << "," << G << "," << B << "," << A << "),";
+		ss << "\"borderColor_\":\"(" << R << "," << G << "," << B << "," << A << ")\",";
 
 		R = drawInfo_.interiorColor_.R;
 		G = drawInfo_.interiorColor_.G;
 		B = drawInfo_.interiorColor_.B;
 		A = drawInfo_.interiorColor_.A;
-		ss << "interiorColor_:(" << R << "," << G << "," << B << "," << A << "),";
+		ss << "\"interiorColor_\":\"(" << R << "," << G << "," << B << "," << A << ")\",";
 
-		ss << "thickness_:" << drawInfo_.thickness_ << ",";
+		ss << "\"thickness_\":\"" << drawInfo_.thickness_ << "\",";
 
-		ss << "isFilled_:" << drawInfo_.isFilled_ << "";
+		ss << "\"isFilled_\":\"" << drawInfo_.isFilled_ << "\"";
 
 		ss << "}";
 
@@ -84,12 +84,12 @@ public :
     {
         std::stringstream ss;
 
-        ss << "ObjRectangle:{";
+        ss << "\"ObjRectangle\":{";
 
 		ss << drawInfoSerialize() << ",";
 
-		ss << "P1_:" << P1_ << ",";
-		ss << "P2_:" << P2_ << "";
+		ss << "\"P1_\":\"" << P1_ << "\",";
+		ss << "\"P2_\":\"" << P2_ << "\"";
 		ss << "}";
 
         return ss.str();
@@ -125,12 +125,12 @@ public:
     {
         std::stringstream ss;
 
-        ss << "ObjSegment:{";
+        ss << "\"ObjSegment\":{";
 
 		ss << drawInfoSerialize() << ",";
 
-		ss << "P1_:" << P1_ << ",";
-		ss << "P2_:" << P2_ << "";
+		ss << "\"P1_\":\"" << P1_ << "\",";
+		ss << "\"P2_\":\"" << P2_ << "\"";
 		ss << "}";
 
         return ss.str();
@@ -170,12 +170,12 @@ public:
     {
         std::stringstream ss;
 
-        ss << "ObjCercle:{";
+        ss << "\"ObjCercle\":{";
 
 		ss << drawInfoSerialize() << ",";
 
-		ss << "P1_:" << P1_ << ",";
-		ss << "P2_:" << P2_ << "";
+		ss << "\"P1_\":\"" << P1_ << "\",";
+		ss << "\"P2_\":\"" << P2_ << "\"";
 		ss << "}";
 
         return ss.str();
