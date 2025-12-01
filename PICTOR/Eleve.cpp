@@ -85,8 +85,9 @@ void bntToolDerriereClick(Model& Data)
 
 void btnToolSwitchThickness(Model& Data)
 {
+    const int btn_index = 9;
     auto epaisseurButton = dynamic_cast<EpaisseurButton*>(
-        Data.LButtons.at(9).get()
+        Data.LButtons.at(btn_index).get()
     );
 
     if (epaisseurButton) {
@@ -95,6 +96,40 @@ void btnToolSwitchThickness(Model& Data)
 
         std::cout << "Nouvelle épaisseur : ";
         std::cout << epaisseurButton->getEpaisseur() << "\n";
+    }
+
+    return;
+}
+
+void btnSwitchColorTrait(Model& Data)
+{
+    const int btn_index = 7;
+    auto button = dynamic_cast<CouleurButton*>(
+        Data.LButtons.at(btn_index).get()
+    );
+
+    if (button) {
+        button->nextCouleur();
+        Data.drawingOptions.borderColor_ = button->getCouleur();
+
+        std::cout << "Nouvelle couleur de trait. \n";
+    }
+
+    return;
+}
+
+void btnSwitchColorFond(Model& Data)
+{
+    const int btn_index = 8;
+    auto button = dynamic_cast<CouleurButton*>(
+        Data.LButtons.at(btn_index).get()
+    );
+
+    if (button) {
+        button->nextCouleur();
+        Data.drawingOptions.interiorColor_ = button->getCouleur();
+
+        std::cout << "Nouvelle couleur de fond. \n";
     }
 
     return;
@@ -148,11 +183,11 @@ void initApp(Model& App)
 	x += s;
 
 	// Étape 6
-	auto B8 = make_shared<TemplateButton>("Choisir la couleur de trait suivante", V2(x, 0), V2(s, s), bntToolSelectionClick);
+	auto B8 = make_shared<CouleurButton>("Choisir la couleur de trait suivante", V2(x, 0), V2(s, s), btnSwitchColorTrait, false);
 	App.LButtons.push_back(B8);
 	x += s;
 
-    auto B9 = make_shared<TemplateButton>("Choisir la couleur de fond suivante", V2(x, 0), V2(s, s), bntToolSelectionClick);
+    auto B9 = make_shared<CouleurButton>("Choisir la couleur de fond suivante", V2(x, 0), V2(s, s), btnSwitchColorFond, true);
 	App.LButtons.push_back(B9);
 	x += s;
 
