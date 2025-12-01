@@ -162,6 +162,36 @@ void btnToolLignePolygonale(Model& Data)
     return;
 }
 
+void btnSave(Model& Data)
+{
+    std::cout << "btnSave(.) ! \n";
+
+    int n = Data.LObjets.size();
+
+    std::stringstream ss;
+
+    ss << "{\n";
+    for (int i = 0; i < n; i++)
+	{
+		ss << Data.LObjets.at(i)->Serialize();
+        if (i < n-1) {
+            ss << ",";
+        }
+        ss << "\n";
+	}
+    ss << "}\n";
+
+    std::cout << ss.str();
+
+    return;
+}
+
+void btnLoad(Model& Data)
+{
+    std::cout << "btnLoad(.) ! \n";
+    return;
+}
+
 
 
 //----------------------------------------------------------------------------//
@@ -231,6 +261,15 @@ void initApp(Model& App)
     // Étape 7
     auto BC = make_shared<Button>("Outil Ligne Polygonale", V2(x, 0), V2(s, s), "outil_polygone.png", btnToolLignePolygonale);
 	App.LButtons.push_back(BC);
+	x += s;
+
+    // Étape 8
+    auto BD = make_shared<Button>("Outil Save", V2(x, 0), V2(s, s), "new/outil_save2.png", btnSave);
+	App.LButtons.push_back(BD);
+	x += s;
+
+    auto BE = make_shared<Button>("Outil Load", V2(x, 0), V2(s, s), "new/outil_load2.png", btnLoad);
+	App.LButtons.push_back(BE);
 	x += s;
 
 
