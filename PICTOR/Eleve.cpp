@@ -200,7 +200,72 @@ void btnSave(Model& Data)
 
 void btnLoad(Model& Data)
 {
+    Data.LObjets = {};
+
     std::cout << "btnLoad(.) ! \n";
+
+    std::string nom_fichier = "sauvegarde.json";
+    std::ifstream ss(nom_fichier);
+
+    if (!ss.is_open()) {
+        std::cerr << "Erreur en ouvrant (lecture) : `" << nom_fichier << "` .\n";
+        return;
+    }
+
+    std::stringstream buffer;
+    buffer << ss.rdbuf();  // lire le fichier en entier
+    std::string data = buffer.str();  // fichier converti en std::string
+    ss.close();
+
+
+
+    size_t pos = data.find_first_of('{') + 1;  // the first '{'
+    while ((pos = data.find("{", pos)) != std::string::npos) {
+        // the number
+        size_t startKey = data.rfind("\"", pos);
+        size_t endKey = data.find("\"", startKey + 1);
+        std::string key = data.substr(startKey + 1, endKey - startKey - 1);
+
+        // the type of the object
+        size_t objStart = data.find(":", endKey) + 1;
+        size_t typeStart = data.find("\"", objStart) + 1;
+        size_t typeEnd = data.find("\"", typeStart);
+        std::string type = data.substr(typeStart, typeEnd - typeStart);
+
+        // the inner data
+        size_t innerStart = data.find("{", typeEnd);
+
+        int braceCount = 1;
+        size_t innerEnd = innerStart + 1;
+        while (braceCount > 0 && innerEnd < data.size()) {
+            if (data[innerEnd] == '{') braceCount++;
+            if (data[innerEnd] == '}') braceCount--;
+            innerEnd++;
+        }
+
+        std::string innerData = data.substr(innerStart, innerEnd - innerStart);
+
+
+        std::cout << "Type: " << type << ", Inner Data: " << innerData << "\n";
+
+        pos = innerEnd;
+    }
+
+
+
+    // if (typeData == "ObjRectangle") {
+    //     auto newObj = std::make_shared<ObjRectangle>(innerData);
+    //     Data.LObjets.push_back(newObj);
+    // }
+    // else if (typeData == "ObjSegment") {
+    //     auto newObj = std::make_shared<ObjSegment>(innerData);
+    //     Data.LObjets.push_back(newObj);
+    // }
+    // else if (typeData == "ObjCercle") {
+    //     auto newObj = std::make_shared<ObjCercle>(innerData);
+    //     Data.LObjets.push_back(newObj);
+    // }
+
     return;
 }
 
