@@ -182,12 +182,53 @@ public:
 		G.drawRectangle(getPos(), getSize(), Color::Gray, false,2);
 		G.drawRectangle(getPos() + V2(2,2), getSize()-V2(4,4), Color::Black, false,2);
 
-		// G.drawLine(start, end, getCouleur(), epaisseur);
 		if (fond) {
 			G.drawRectangle(start, end, getCouleur(), true, 0);
 		} else {
 			G.drawRectangle(start, end, getCouleur(), false, epaisseur);
 		}
+
+		return;
+	}
+};
+
+class FondButton : public AbstractButton
+{
+	bool fondActivé;
+
+	V2 start = V2(getPos().x			   + 8, getPos().y + getSize().y*1/4);
+	V2 end   = V2(             getSize().x -16,              getSize().y*2/4);
+
+	const int epaisseur = 5;
+
+public:
+	FondButton(string myName, V2 pos, V2 size, function<void(Model&)> callBack) :
+		AbstractButton(myName, pos, size, callBack) {
+		return;
+	}
+
+	const bool getFondActivé() const {
+		return fondActivé;
+	}
+
+	void toggleFond()
+	{
+		fondActivé = !fondActivé;
+		return;
+	}
+
+	void draw(Graphics & G) override
+	{
+		G.drawRectangle(getPos(), getSize(), Color::White, true,2);
+
+		G.drawRectangle(getPos(), getSize(), Color::Gray, false,2);
+		G.drawRectangle(getPos() + V2(2,2), getSize()-V2(4,4), Color::Black, false,2);
+
+		if (fondActivé) {
+			G.drawRectangle(start, end, Color::Gray, true, 0);
+		}
+
+		G.drawRectangle(start, end, Color::Gray, false, epaisseur);
 
 		return;
 	}

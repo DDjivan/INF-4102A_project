@@ -135,6 +135,27 @@ void btnSwitchColorFond(Model& Data)
     return;
 }
 
+void btnToggleFond(Model& Data)
+{
+    const int btn_index = 10;
+    auto button = dynamic_cast<FondButton*>(
+        Data.LButtons.at(btn_index).get()
+    );
+
+    if (button) {
+        button->toggleFond();
+        Data.drawingOptions.isFilled_ = button->getFondActivé();
+
+        if (button->getFondActivé()) {
+            std::cout << "Fond activé. \n ";
+        } else {
+            std::cout << "Fond désactivé. \n ";
+        }
+    }
+
+    return;
+}
+
 
 
 void initApp(Model& App)
@@ -195,7 +216,7 @@ void initApp(Model& App)
 	App.LButtons.push_back(BA);
 	x += s;
 
-    auto BB = make_shared<TemplateButton>("Basculer la présence du fond", V2(x, 0), V2(s, s), bntToolSelectionClick);
+    auto BB = make_shared<FondButton>("Basculer la présence du fond", V2(x, 0), V2(s, s), btnToggleFond);
 	App.LButtons.push_back(BB);
 	x += s;
 
