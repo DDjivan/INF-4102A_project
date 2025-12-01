@@ -15,15 +15,19 @@ SOURCES = \
     V2.cpp
 
 HEADERS = \
+    Button.h \
     Color.h \
     Event.h \
-    Graphic.h \
+    glut.h \
+    GlutImport.h \
+    Graphics.h \
+    jpeg_decoder.h \
     Model.h \
     ObjAttr.h \
     ObjGeom.h \
     Tool.h \
-    V2.h \
-    jpeg_decoder.h
+    V2.h
+
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
