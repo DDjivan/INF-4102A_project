@@ -472,4 +472,6 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-sauvegarde.json
+### Personnel ! Sauvegarde ↓ (.json inutilisé au final)
+*.json
+*.csv
