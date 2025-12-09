@@ -204,46 +204,31 @@ void btnSave(Model& Data)
     return;
 }
 
-void btnLoad(Model& Data)
-{
-    // std::cout << "btnLoad(.) ! \n";
 
+
+void loadFromString(Model& Data, std::string input)
+{
     ////// réinitialiser la liste d'objets
 	Data.LObjets = {};
-
-	////// lecture de fichier
-    std::string nom_fichier = "sauvegarde.csv";
-    std::ifstream ss(nom_fichier);
-
-    if (!ss.is_open()) {
-        std::cerr << "Erreur en ouvrant (lecture) : `" << nom_fichier <<"` .\n";
-        return;
-    }
-	std::cout << "Chargement de la sauvegarde (`" << nom_fichier <<"`) : \n";
-
-    std::stringstream buffer;
-    buffer << ss.rdbuf();  // lire le fichier en entier
-    std::string data = buffer.str();  // fichier converti en std::string
-    ss.close();
 
 	////// analyse deu fichier
     size_t positionA, distanceB, distanceType;
     std::string extrait, type;
 
 	// saut de la première ligne
-    positionA = data.substr(        0, std::string::npos).find_first_of('\n')+1;
+    positionA = input.substr(        0, std::string::npos).find_first_of('\n')+1;
 
 	// ligne par ligne
-	while (positionA < data.length())
+	while (positionA < input.length())
 	{
-		distanceB = data.substr(positionA, std::string::npos).find_first_of('\n')+1;
+		distanceB = input.substr(positionA, std::string::npos).find_first_of('\n')+1;
 
 
-		extrait = data.substr(positionA, distanceB);
+		extrait = input.substr(positionA, distanceB);
 		// std::cout << "extrait = " << extrait << "\n";
 
-		distanceType = data.substr(positionA, std::string::npos).find_first_of(';');
-		type = data.substr(positionA, distanceType);
+		distanceType = input.substr(positionA, std::string::npos).find_first_of(';');
+		type = input.substr(positionA, distanceType);
 		// std::cout << "type = " << type << "\n";
 
 
@@ -272,6 +257,33 @@ void btnLoad(Model& Data)
 		// std::cout << "positionA = " << positionA << ", distanceB = " << distanceB << ".\n";
 		positionA += distanceB;
 	}
+	return;
+}
+
+void btnLoad(Model& Data)
+{
+    // std::cout << "btnLoad(.) ! \n";
+
+	////// lecture de fichier
+    std::string nom_fichier = "sauvegarde.csv";
+    std::ifstream ss(nom_fichier);
+
+    if (!ss.is_open()) {
+        std::cerr << "Erreur en ouvrant (lecture) : `" << nom_fichier <<"` .\n";
+        return;
+    }
+	std::cout << "Chargement de la sauvegarde (`" << nom_fichier <<"`) : \n";
+
+    std::stringstream buffer;
+    buffer << ss.rdbuf();  // lire le fichier en entier
+    std::string input = buffer.str();  // fichier converti en std::string
+    ss.close();
+
+
+
+	loadFromString(Data, input);
+
+
 
 	std::cout << "Fin du chargement.\n";
 	return;
