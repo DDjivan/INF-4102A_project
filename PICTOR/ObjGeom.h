@@ -157,6 +157,15 @@ public :
 
         return ss.str();
     }
+
+
+	ObjRectangle(const std::string& serializedString)
+    {
+        drawInfo_ = extractDrawInfo(serializedString);
+        P1_ = stringToValue<V2>(serializedString, 5);
+        P2_ = stringToValue<V2>(serializedString, 6);
+		return;
+    }
 };
 
 
@@ -197,6 +206,14 @@ public:
 		ss << "";
 
         return ss.str();
+    }
+
+	ObjSegment(const std::string& serializedString)
+    {
+        drawInfo_ = extractDrawInfo(serializedString);
+        P1_ = stringToValue<V2>(serializedString, 5);
+        P2_ = stringToValue<V2>(serializedString, 6);
+		return;
     }
 };
 
@@ -242,5 +259,13 @@ public:
 		ss << "";
 
         return ss.str();
+    }
+
+	ObjCercle(const std::string& serializedString)
+    {
+        drawInfo_ = extractDrawInfo(serializedString);
+        P1_ = stringToValue<V2>(serializedString, 5);
+        P2_ = stringToValue<V2>(serializedString, 6);
+		return;
     }
 };
