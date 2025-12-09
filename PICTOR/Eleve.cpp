@@ -167,30 +167,27 @@ void btnToolLignePolygonale(Model& Data)
 
 void btnSave(Model& Data)
 {
-    std::cout << "btnSave(.) ! \n";
+    // std::cout << "btnSave(.) ! \n";
 
     int n = Data.LObjets.size();
 
-    std::string nom_fichier = "sauvegarde.json";
+    std::string nom_fichier = "sauvegarde.csv";
     std::ofstream ss(nom_fichier);
 
     if (!ss.is_open()) {
-        std::cerr << "Erreur en ouvrant (écriture) : `" << nom_fichier << "` .\n";
+        std::cerr <<"Erreur en ouvrant (écriture) : `" << nom_fichier <<"` .\n";
         return;
     }
 
-    ss << "{\n";
+    ss << "TYPE;drawInfo_.borderColor_;drawInfo_.interiorColor_;drawInfo_.thickness_;drawInfo_.isFilled_;P1_;P2_;\n";
     for (int i = 0; i < n; i++)
 	{
-        ss << "\"" << i+1 << "\":{";
+        // ss << "" << i+1 << "";
 		ss << Data.LObjets.at(i)->Serialize();
-        ss << "}";
-        if (i < n-1) {
-            ss << ",";
-        }
+        ss << "";
         ss << "\n";
 	}
-    ss << "}\n";
+    ss << "";
 
     ss.close();
     std::cout << "Sauvegarde effectuée dans `./" << nom_fichier << "`. \n";
