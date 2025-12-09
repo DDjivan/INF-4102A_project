@@ -167,30 +167,27 @@ void btnToolLignePolygonale(Model& Data)
 
 void btnSave(Model& Data)
 {
-    std::cout << "btnSave(.) ! \n";
+    // std::cout << "btnSave(.) ! \n";
 
     int n = Data.LObjets.size();
 
-    std::string nom_fichier = "sauvegarde.json";
+    std::string nom_fichier = "sauvegarde.csv";
     std::ofstream ss(nom_fichier);
 
     if (!ss.is_open()) {
-        std::cerr << "Erreur en ouvrant (écriture) : `" << nom_fichier << "` .\n";
+        std::cerr <<"Erreur en ouvrant (écriture) : `" << nom_fichier <<"` .\n";
         return;
     }
 
-    ss << "{\n";
+    ss << "TYPE;drawInfo_.borderColor_;drawInfo_.interiorColor_;drawInfo_.thickness_;drawInfo_.isFilled_;P1_;P2_;\n";
     for (int i = 0; i < n; i++)
 	{
-        ss << "\"" << i+1 << "\":{";
+        // ss << "" << i+1 << "";
 		ss << Data.LObjets.at(i)->Serialize();
-        ss << "}";
-        if (i < n-1) {
-            ss << ",";
-        }
+        ss << "";
         ss << "\n";
 	}
-    ss << "}\n";
+    ss << "";
 
     ss.close();
     std::cout << "Sauvegarde effectuée dans `./" << nom_fichier << "`. \n";
@@ -200,8 +197,75 @@ void btnSave(Model& Data)
 
 void btnLoad(Model& Data)
 {
-    std::cout << "btnLoad(.) ! \n";
-    return;
+    // std::cout << "btnLoad(.) ! \n";
+
+    ////// réinitialiser la liste d'objets
+	Data.LObjets = {};
+
+	////// lecture de fichier
+    std::string nom_fichier = "sauvegarde.csv";
+    std::ifstream ss(nom_fichier);
+
+    if (!ss.is_open()) {
+        std::cerr << "Erreur en ouvrant (lecture) : `" << nom_fichier <<"` .\n";
+        return;
+    }
+	std::cout << "Chargement de la sauvegarde (`" << nom_fichier <<"`) : \n";
+
+    std::stringstream buffer;
+    buffer << ss.rdbuf();  // lire le fichier en entier
+    std::string data = buffer.str();  // fichier converti en std::string
+    ss.close();
+
+	////// analyse deu fichier
+    size_t positionA, distanceB, distanceType;
+    std::string extrait, type;
+
+	// saut de la première ligne
+    positionA = data.substr(        0, std::string::npos).find_first_of('\n')+1;
+
+	// ligne par ligne
+	while (positionA < data.length())
+	{
+		distanceB = data.substr(positionA, std::string::npos).find_first_of('\n')+1;
+
+
+		extrait = data.substr(positionA, distanceB);
+		// std::cout << "extrait = " << extrait << "\n";
+
+		distanceType = data.substr(positionA, std::string::npos).find_first_of(';');
+		type = data.substr(positionA, distanceType);
+		// std::cout << "type = " << type << "\n";
+
+
+		// ajout
+		if (type == "ObjRectangle")
+		{
+			std::cout << "- Ajout d'un ObjRectangle ; \n";
+			// std::shared_ptr<ObjRectangle> obj = make_shared<ObjRectangle>(extrait);
+			auto obj = make_shared<ObjRectangle>(extrait);
+			Data.LObjets.push_back(obj);
+		}
+		else if (type == "ObjSegment")
+		{
+			std::cout << "- Ajout d'un ObjSegment ; \n";
+			auto obj = make_shared<ObjSegment>(extrait);
+			Data.LObjets.push_back(obj);
+		}
+		else if (type == "ObjCercle")
+		{
+			std::cout << "- Ajout d'un ObjCercle ; \n";
+			auto obj = make_shared<ObjCercle>(extrait);
+			Data.LObjets.push_back(obj);
+		}
+
+		// incrémentation
+		// std::cout << "positionA = " << positionA << ", distanceB = " << distanceB << ".\n";
+		positionA += distanceB;
+	}
+
+	std::cout << "Fin du chargement.\n";
+	return;
 }
 
 
@@ -276,11 +340,11 @@ void initApp(Model& App)
 	x += s;
 
     // Étape 8
-    auto BD = make_shared<Button>("Outil Save", V2(x, 0), V2(s, s), "new/outil_save2.png", btnSave);
+    auto BD = make_shared<Button>("Save", V2(x, 0), V2(s, s), "new/outil_save2.png", btnSave);
 	App.LButtons.push_back(BD);
 	x += s;
 
-    auto BE = make_shared<Button>("Outil Load", V2(x, 0), V2(s, s), "new/outil_load2.png", btnLoad);
+    auto BE = make_shared<Button>("Load", V2(x, 0), V2(s, s), "new/outil_load2.png", btnLoad);
 	App.LButtons.push_back(BE);
 	x += s;
 
