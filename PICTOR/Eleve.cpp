@@ -165,11 +165,27 @@ void btnToolLignePolygonale(Model& Data)
 
 
 
+std::string saveToString(Model& Data)
+{
+	std::stringstream ss;
+
+	ss << "TYPE;drawInfo_.borderColor_;drawInfo_.interiorColor_;drawInfo_.thickness_;drawInfo_.isFilled_;P1_;P2_;\n";
+
+	int n = Data.LObjets.size();
+
+    for (int i = 0; i < n; i++)
+	{
+		ss << Data.LObjets.at(i)->Serialize();
+        ss << "";
+        ss << "\n";
+	}
+
+	return ss.str();
+}
+
 void btnSave(Model& Data)
 {
     // std::cout << "btnSave(.) ! \n";
-
-    int n = Data.LObjets.size();
 
     std::string nom_fichier = "sauvegarde.csv";
     std::ofstream ss(nom_fichier);
@@ -179,17 +195,10 @@ void btnSave(Model& Data)
         return;
     }
 
-    ss << "TYPE;drawInfo_.borderColor_;drawInfo_.interiorColor_;drawInfo_.thickness_;drawInfo_.isFilled_;P1_;P2_;\n";
-    for (int i = 0; i < n; i++)
-	{
-        // ss << "" << i+1 << "";
-		ss << Data.LObjets.at(i)->Serialize();
-        ss << "";
-        ss << "\n";
-	}
-    ss << "";
+    ss << saveToString(Data);
 
     ss.close();
+
     std::cout << "Sauvegarde effectuée dans `./" << nom_fichier << "`. \n";
 
     return;
