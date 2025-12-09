@@ -340,11 +340,11 @@ void initApp(Model& App)
 	x += s;
 
     // Étape 8
-    auto BD = make_shared<Button>("Outil Save", V2(x, 0), V2(s, s), "new/outil_save2.png", btnSave);
+    auto BD = make_shared<Button>("Save", V2(x, 0), V2(s, s), "new/outil_save2.png", btnSave);
 	App.LButtons.push_back(BD);
 	x += s;
 
-    auto BE = make_shared<Button>("Outil Load", V2(x, 0), V2(s, s), "new/outil_load2.png", btnLoad);
+    auto BE = make_shared<Button>("Load", V2(x, 0), V2(s, s), "new/outil_load2.png", btnLoad);
 	App.LButtons.push_back(BE);
 	x += s;
 
