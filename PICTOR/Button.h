@@ -7,6 +7,7 @@
 #include "Event.h"
 #include "Model.h"
 #include <functional>
+#include <array>
 
 using namespace std;
 
