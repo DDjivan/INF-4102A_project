@@ -206,6 +206,12 @@ void btnLoad(Model& Data)
 
 
 
+void btnEditionPoint(Model& Data)
+{
+	std::cout << "btnLoad(.) ! \n";
+	return;
+}
+
 //----------------------------------------------------------------------------//
 
 void initApp(Model& App)

@@ -155,7 +155,12 @@ public:
 	void draw(Graphics& G) override
 	{
 		const float r = (P1_ - P2_).norm();
-		G.drawCircle(P1_, r, drawInfo_.borderColor_, drawInfo_.thickness_);
+		
+		if (drawInfo_.isFilled_)
+		{
+			//G.drawCircle(P1_, r, drawInfo_.interiorColor_, true);
+		}
+		G.drawCircle(P1_, r, drawInfo_.borderColor_, false, drawInfo_.thickness_); //L'epaisseur marche mal
 	}
 
 

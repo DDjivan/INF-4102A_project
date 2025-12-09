@@ -116,7 +116,15 @@ public:
 		V2 size;
 			if (currentState == State::INTERACT)
 				getPLH(Pstart, Data.currentMousePos,P,size );// Convertie les point diagonneaux en taille et point de depart du rectangle (utulisation prof ObjGeom.h l36)
-				G.drawRectangle(P, size, Data.drawingOptions.borderColor_, Data.drawingOptions.thickness_);//Voir si faut la meme couleur avant et apres creation
+				
+			
+			if (Data.drawingOptions.isFilled_)
+			{
+				G.drawRectangle(P, size, Data.drawingOptions.interiorColor_, true);
+			}
+
+			G.drawRectangle(P, size, Data.drawingOptions.borderColor_, false, Data.drawingOptions.thickness_);
+			//G.drawRectangle(P, size, Data.drawingOptions.interiorColor_, Data.drawingOptions.thickness_);
 	}
 };
 
@@ -170,7 +178,13 @@ public:
 		if (currentState == State::INTERACT)
 		{
 			float r = (Pstart - Data.currentMousePos).norm();
-			G.drawCircle(Pstart, r, Data.drawingOptions.borderColor_, Data.drawingOptions.thickness_);
+			if (Data.drawingOptions.isFilled_)
+			{
+				G.drawCircle(Pstart, r, Data.drawingOptions.interiorColor_, true);
+			}
+
+			G.drawCircle(Pstart, r, Data.drawingOptions.borderColor_, false, Data.drawingOptions.thickness_);// L'epaisseur marche mal
+			
 		}
 	}
 
