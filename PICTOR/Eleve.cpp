@@ -197,8 +197,75 @@ void btnSave(Model& Data)
 
 void btnLoad(Model& Data)
 {
-    std::cout << "btnLoad(.) ! \n";
-    return;
+    // std::cout << "btnLoad(.) ! \n";
+
+    ////// réinitialiser la liste d'objets
+	Data.LObjets = {};
+
+	////// lecture de fichier
+    std::string nom_fichier = "sauvegarde.csv";
+    std::ifstream ss(nom_fichier);
+
+    if (!ss.is_open()) {
+        std::cerr << "Erreur en ouvrant (lecture) : `" << nom_fichier <<"` .\n";
+        return;
+    }
+	std::cout << "Chargement de la sauvegarde (`" << nom_fichier <<"`) : \n";
+
+    std::stringstream buffer;
+    buffer << ss.rdbuf();  // lire le fichier en entier
+    std::string data = buffer.str();  // fichier converti en std::string
+    ss.close();
+
+	////// analyse deu fichier
+    size_t positionA, distanceB, distanceType;
+    std::string extrait, type;
+
+	// saut de la première ligne
+    positionA = data.substr(        0, std::string::npos).find_first_of('\n')+1;
+
+	// ligne par ligne
+	while (positionA < data.length())
+	{
+		distanceB = data.substr(positionA, std::string::npos).find_first_of('\n')+1;
+
+
+		extrait = data.substr(positionA, distanceB);
+		// std::cout << "extrait = " << extrait << "\n";
+
+		distanceType = data.substr(positionA, std::string::npos).find_first_of(';');
+		type = data.substr(positionA, distanceType);
+		// std::cout << "type = " << type << "\n";
+
+
+		// ajout
+		if (type == "ObjRectangle")
+		{
+			std::cout << "- Ajout d'un ObjRectangle ; \n";
+			// std::shared_ptr<ObjRectangle> obj = make_shared<ObjRectangle>(extrait);
+			auto obj = make_shared<ObjRectangle>(extrait);
+			Data.LObjets.push_back(obj);
+		}
+		else if (type == "ObjSegment")
+		{
+			std::cout << "- Ajout d'un ObjSegment ; \n";
+			auto obj = make_shared<ObjSegment>(extrait);
+			Data.LObjets.push_back(obj);
+		}
+		else if (type == "ObjCercle")
+		{
+			std::cout << "- Ajout d'un ObjCercle ; \n";
+			auto obj = make_shared<ObjCercle>(extrait);
+			Data.LObjets.push_back(obj);
+		}
+
+		// incrémentation
+		// std::cout << "positionA = " << positionA << ", distanceB = " << distanceB << ".\n";
+		positionA += distanceB;
+	}
+
+	std::cout << "Fin du chargement.\n";
+	return;
 }
 
 
