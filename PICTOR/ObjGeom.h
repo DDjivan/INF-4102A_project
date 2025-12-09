@@ -49,6 +49,69 @@ public :
 
 		return ss.str();
 	}
+
+
+
+	template <typename T>
+	T stringToValue(const std::string& input, const int index)
+	{
+		size_t posA, distB;
+
+		posA = 0;
+		distB = input.substr(posA, std::string::npos).find_first_of(';') +1;
+
+		for (int i = 0; i < index; i++)
+		{
+			posA += distB;
+			distB = input.substr(posA, std::string::npos).find_first_of(';') +1;
+		}
+
+		std::string value = input.substr(posA, distB-1);
+		// std::cout << "index = " <<  index << ", value = " << value << "\n";
+
+		// throw std::invalid_argument("DEBUG ! \n");
+
+
+
+		// if constexpr (std::is_same<T, std::string>::value) {
+		// 	return value;
+		// }
+		if constexpr (std::is_same<T, int>::value) {
+			return std::stoi(value);
+		}
+		// if (std::is_same<T, float>::value) {
+		// 	return std::stof(value);
+		// }
+		if constexpr (std::is_same<T, bool>::value) {
+			return (value == "1");
+		}
+		if constexpr (std::is_same<T, Color>::value) {
+			float R, G, B, A;
+			// sscanf prend un const char* pour le 1er arg
+    		sscanf(value.c_str(), "(%f,%f,%f,%f)", &R, &G, &B, &A);
+			return Color(R, G, B, A);
+		}
+		if constexpr (std::is_same<T, V2>::value) {
+			int x, y;
+    		sscanf(value.c_str(), "(%d,%d)", &x, &y);
+			return V2(x, y);
+		}
+
+		throw std::invalid_argument("Type non pris en charge ! \n");
+	}
+
+	ObjAttr extractDrawInfo(const std::string& input)
+	{
+		ObjAttr drawInfo;
+
+		drawInfo.borderColor_ = stringToValue<Color>(input, 1);
+		drawInfo.interiorColor_ = stringToValue<Color>(input, 2);
+		drawInfo.thickness_ = stringToValue<int>(input, 3);
+		drawInfo.isFilled_ = stringToValue<bool>(input, 4);
+
+		return drawInfo;
+	}
+
 };
 
 
