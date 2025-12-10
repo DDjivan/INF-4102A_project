@@ -218,6 +218,8 @@ void btnSave(Model& Data)
 
 void loadFromString(Model& Data, std::string input)
 {
+	const bool VERBOSE = false;
+
     ////// réinitialiser la liste d'objets
 	Data.LObjets = {};
 
@@ -245,20 +247,20 @@ void loadFromString(Model& Data, std::string input)
 		// ajout
 		if (type == "ObjRectangle")
 		{
-			std::cout << "- Ajout d'un ObjRectangle ; \n";
+			if (VERBOSE) std::cout << "- Ajout d'un ObjRectangle ; \n";
 			// std::shared_ptr<ObjRectangle> obj = make_shared<ObjRectangle>(extrait);
 			auto obj = make_shared<ObjRectangle>(extrait);
 			Data.LObjets.push_back(obj);
 		}
 		else if (type == "ObjSegment")
 		{
-			std::cout << "- Ajout d'un ObjSegment ; \n";
+			if (VERBOSE) std::cout << "- Ajout d'un ObjSegment ; \n";
 			auto obj = make_shared<ObjSegment>(extrait);
 			Data.LObjets.push_back(obj);
 		}
 		else if (type == "ObjCercle")
 		{
-			std::cout << "- Ajout d'un ObjCercle ; \n";
+			if (VERBOSE) std::cout << "- Ajout d'un ObjCercle ; \n";
 			auto obj = make_shared<ObjCercle>(extrait);
 			Data.LObjets.push_back(obj);
 		}
