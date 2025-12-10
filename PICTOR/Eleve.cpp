@@ -467,7 +467,7 @@ void initApp(Model& App)
 	x += s;
 
 	// Étape 10
-	auto BG = make_shared<Button>("Outil Édition des points", V2(x, 0), V2(s, s), "new/outil_édition2.png", btnEditionPoint);
+	auto BG = make_shared<Button>("Outil Édition des points", V2(x, 0), V2(s, s), "new/outil_édition2.png", bntToolEditionPoint);
 	App.LButtons.push_back(BG);
   x += s;
 
