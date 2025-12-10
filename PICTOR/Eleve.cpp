@@ -374,6 +374,15 @@ void btnUndo(Model& Data)
 
 
 
+
+
+
+void bntToolEditionPoint(Model& Data)
+{
+	Data.currentTool = make_shared<ToolEditionPoint>();
+	return;
+}
+
 //----------------------------------------------------------------------------//
 
 void initApp(Model& App)
@@ -456,6 +465,11 @@ void initApp(Model& App)
 	auto BF = make_shared<Button>("Undo", V2(x, 0), V2(s, s), "new/edit-undo2.png", btnUndo);
 	App.LButtons.push_back(BF);
 	x += s;
+
+	// Étape 10
+	auto BG = make_shared<Button>("Outil Édition des points", V2(x, 0), V2(s, s), "new/outil_édition2.png", btnEditionPoint);
+	App.LButtons.push_back(BG);
+  x += s;
 
 
 	// put two objets in the scene

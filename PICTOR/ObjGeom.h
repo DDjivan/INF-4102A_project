@@ -10,6 +10,9 @@
 class ObjGeom
 {
 public :
+	V2 P1_;
+	V2 P2_;
+	
 	ObjAttr drawInfo_;
 
 	ObjGeom() {}
@@ -118,8 +121,8 @@ public :
 class ObjRectangle : public ObjGeom
 {
 public :
-	V2 P1_;
-	V2 P2_;
+	//V2 P1_;
+	//V2 P2_;
 
 	ObjRectangle(ObjAttr  drawInfo, V2 P1, V2 P2) : ObjGeom(drawInfo)
 	{
@@ -172,8 +175,8 @@ public :
 class ObjSegment : public ObjGeom
 {
 public:
-	V2 P1_;
-	V2 P2_;
+	//V2 P1_;
+	//V2 P2_;
 
 	ObjSegment(ObjAttr  drawInfo, V2 P1, V2 P2) : ObjGeom(drawInfo)
 	{
@@ -223,8 +226,8 @@ public:
 class ObjCercle : public ObjGeom
 {
 public:
-	V2 P1_;
-	V2 P2_;
+	//V2 P1_;
+	//V2 P2_;
 
 	ObjCercle(ObjAttr  drawInfo, V2 P1, V2 P2) : ObjGeom(drawInfo)
 	{
@@ -235,7 +238,12 @@ public:
 	void draw(Graphics& G) override
 	{
 		const float r = (P1_ - P2_).norm();
-		G.drawCircle(P1_, r, drawInfo_.borderColor_, drawInfo_.thickness_);
+		
+		if (drawInfo_.isFilled_)
+		{
+			G.drawCircle(P1_, r, drawInfo_.interiorColor_, true);
+		}
+		G.drawCircle(P1_, r, drawInfo_.borderColor_, false, drawInfo_.thickness_); //L'epaisseur marche mal
 	}
 
 
