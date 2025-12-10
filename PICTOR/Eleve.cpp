@@ -46,8 +46,13 @@ void bntToolRAZClick(Model& Data) {
 			saveCurrentState(Data);
 
 			Data.LObjets.erase(Data.LObjets.begin() + k);
+
+			return;
 		}
 	}
+
+	std::cout << "L'objet sélectionné n'existe plus ! \n";
+	return;
 }
 
 
@@ -71,8 +76,13 @@ void bntToolDevantClick(Model& Data)
 			auto x = Data.LObjets[k];
 			Data.LObjets[k] = Data.LObjets[k + 1];
 			Data.LObjets[k + 1] = x;
+
+			return;
 		}
 	}
+
+	std::cout << "L'objet sélectionné n'existe plus ! \n";
+	return;
 }
 
 
@@ -90,8 +100,13 @@ void bntToolDerriereClick(Model& Data)
 			auto x = Data.LObjets[k];
 			Data.LObjets[k] = Data.LObjets[k - 1];
 			Data.LObjets[k - 1] = x;
+
+			return;
 		}
 	}
+
+	std::cout << "L'objet sélectionné n'existe plus ! \n";
+	return;
 }
 
 void btnToolSwitchThickness(Model& Data)
