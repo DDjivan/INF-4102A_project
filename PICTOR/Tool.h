@@ -293,3 +293,144 @@ public:
 		return;
     }
 };
+
+
+
+
+
+
+
+
+
+class ToolEditionPoint : public Tool
+{
+	V2 Pstart;
+	int objet_selectionne = -1;
+	bool Souris_sur_point1;
+	bool Souris_sur_point2;
+	bool P1;
+	bool P2;
+public:
+
+	ToolEditionPoint() : Tool() {}
+	
+	void processEvent(const Event& E, Model& Data) override
+	{
+		/*int k = 0;
+		while ((Data.LObjets.at(k)->P1_ - Data.currentMousePos).norm() < 10 || objet_selectionne != -1)
+		{
+			k++;
+			if (k > Data.LObjets.size()-1)
+			{
+				k = 0;
+			}
+		}*/
+		for (int k = 0; k < Data.LObjets.size(); k++)
+		{
+			Souris_sur_point1 = (Data.LObjets.at(k)->P1_ - Data.currentMousePos).norm() < 10;
+			Souris_sur_point2 = (Data.LObjets.at(k)->P2_ - Data.currentMousePos).norm() < 10;
+
+			//cout << objet_selectionne ;
+
+			if (E.Type == EventType::MouseDown && E.info == "0" && (Souris_sur_point1|| Souris_sur_point2) && objet_selectionne == -1)
+			{
+				objet_selectionne = k;
+				if (Souris_sur_point1)
+				{
+					Data.LObjets.at(k)->P1_ = Data.currentMousePos;
+					P1 = true;
+				}
+				else
+				{
+					Data.LObjets.at(k)->P2_ = Data.currentMousePos;
+					P2 = true;
+				}
+				//cout << "tomate";
+				return;
+			}
+
+
+			if (E.Type == EventType::MouseUp && E.info == "0")
+			{
+				objet_selectionne = -1;
+				P1 = false;
+				P2 = false;
+				//cout << "salade";
+				return;
+			}
+
+			if (objet_selectionne != -1)
+			{
+				if (P1)
+				{
+					Data.LObjets.at(objet_selectionne)->P1_ = Data.currentMousePos;
+					
+				}
+				else
+				{
+					Data.LObjets.at(objet_selectionne)->P2_ = Data.currentMousePos;
+		
+				}
+				//cout << "patate";
+				return;
+			}
+
+			//cout << objet_selectionne;
+		}
+
+
+
+		//for (int k = 0; k < Data.LObjets.size(); k++)
+		//{
+		//	Souris_sur_point = (Data.LObjets.at(k)->P2_ - Data.currentMousePos).norm() < 10;
+
+
+		//	if (E.Type == EventType::MouseDown && E.info == "0" && Souris_sur_point && objet_selectionne == -1) // left mouse button pressed
+		//	{
+		//		objet_selectionne = k;
+		//		
+		//		return;
+		//	}
+
+
+		//	if (E.Type == EventType::MouseUp && E.info == "0")
+		//	{
+		//		objet_selectionne = -1;
+		//		return;
+		//	}
+
+		//	if (objet_selectionne != -1)
+		//	{
+		//		Data.LObjets.at(objet_selectionne)->P2_ = Data.currentMousePos;
+		//		return;
+		//	}
+
+		//}
+
+
+
+
+		
+
+		
+		
+	}
+
+
+
+
+
+	void draw(Graphics& G, const Model& Data) override
+	{
+		for (int k = 0; k < Data.LObjets.size(); k++)
+		{
+			V2 P1 = Data.LObjets.at(k)->P1_;
+			V2 P2 = Data.LObjets.at(k)->P2_;
+
+			G.drawCircle(P1, 10, Color::Magenta, true);
+			G.drawCircle(P2, 10, Color::Magenta, true);
+		}
+		
+	}
+
+};

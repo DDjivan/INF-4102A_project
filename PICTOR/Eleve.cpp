@@ -206,10 +206,12 @@ void btnLoad(Model& Data)
 
 
 
-void btnEditionPoint(Model& Data)
+
+
+
+void bntToolEditionPoint(Model& Data)
 {
-	std::cout << "btnLoad(.) ! \n";
-	return;
+	Data.currentTool = make_shared<ToolEditionPoint>();
 }
 
 //----------------------------------------------------------------------------//
@@ -286,7 +288,7 @@ void initApp(Model& App)
 	App.LButtons.push_back(BD);
 	x += s;
 
-    auto BE = make_shared<Button>("Outil Load", V2(x, 0), V2(s, s), "new/outil_load2.png", btnLoad);
+    auto BE = make_shared<Button>("Outil Load", V2(x, 0), V2(s, s), "new/outil_load2.png", bntToolEditionPoint);
 	App.LButtons.push_back(BE);
 	x += s;
 
@@ -313,7 +315,7 @@ void initApp(Model& App)
 
 void processEvent(const Event& Ev, Model & Data)
 {
-	Ev.print(); // Debug
+	//Ev.print(); // Debug
 
 	// MouseMove event updates x,y coordinates
 	if (Ev.Type == EventType::MouseMove)
