@@ -34,6 +34,8 @@ class Model
 
 	shared_ptr<ObjGeom> ObjSelectionne = nullptr;
 
+	vector<std::string> historique;
+
 	Model()
 	{
 		initApp(*this);
