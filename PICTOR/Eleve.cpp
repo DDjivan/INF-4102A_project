@@ -315,7 +315,7 @@ void initApp(Model& App)
 
 void processEvent(const Event& Ev, Model & Data)
 {
-	//Ev.print(); // Debug
+	Ev.print(); // Debug
 
 	// MouseMove event updates x,y coordinates
 	if (Ev.Type == EventType::MouseMove)
