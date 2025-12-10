@@ -11,6 +11,8 @@
 
 using namespace std;
 
+void saveCurrentState(Model& Data);
+
 // ESC : close window
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,7 +22,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	std::cout << "Press ESC to abort" << endl;
-	Graphics::initMainWindow("Pictor", V2(1200, 800), V2(200, 200));
+	Graphics::initMainWindow("Pictor", V2(1280, 800), V2(200, 200));
 }
 
 void bntToolSegmentClick(Model& Data)   { Data.currentTool = make_shared<ToolSegment>(); }
@@ -33,15 +35,24 @@ void bntToolRAZClick(Model& Data) {
 
 	if (Data.ObjSelectionne == nullptr)
 	{
+		saveCurrentState(Data);
+
 		Data.LObjets = {};
 	}
 	for (int k = 0; k < Data.LObjets.size(); k++)
 	{
 		if (Data.LObjets[k] == Data.ObjSelectionne)
 		{
+			saveCurrentState(Data);
+
 			Data.LObjets.erase(Data.LObjets.begin() + k);
+
+			return;
 		}
 	}
+
+	std::cout << "L'objet sélectionné n'existe plus ! \n";
+	return;
 }
 
 
@@ -60,11 +71,18 @@ void bntToolDevantClick(Model& Data)
 	{
 		if (Data.LObjets[k] == Data.ObjSelectionne)
 		{
+			saveCurrentState(Data);
+
 			auto x = Data.LObjets[k];
 			Data.LObjets[k] = Data.LObjets[k + 1];
 			Data.LObjets[k + 1] = x;
+
+			return;
 		}
 	}
+
+	std::cout << "L'objet sélectionné n'existe plus ! \n";
+	return;
 }
 
 
@@ -77,11 +95,18 @@ void bntToolDerriereClick(Model& Data)
 	{
 		if (Data.LObjets[k] == Data.ObjSelectionne)
 		{
+			saveCurrentState(Data);
+
 			auto x = Data.LObjets[k];
 			Data.LObjets[k] = Data.LObjets[k - 1];
 			Data.LObjets[k - 1] = x;
+
+			return;
 		}
 	}
+
+	std::cout << "L'objet sélectionné n'existe plus ! \n";
+	return;
 }
 
 void btnToolSwitchThickness(Model& Data)
@@ -165,43 +190,186 @@ void btnToolLignePolygonale(Model& Data)
 
 
 
+std::string saveToString(Model& Data)
+{
+	std::stringstream ss;
+
+	ss << "TYPE;drawInfo_.borderColor_;drawInfo_.interiorColor_;drawInfo_.thickness_;drawInfo_.isFilled_;P1_;P2_;\n";
+
+	int n = Data.LObjets.size();
+
+    for (int i = 0; i < n; i++)
+	{
+		ss << Data.LObjets.at(i)->Serialize();
+        ss << "";
+        ss << "\n";
+	}
+
+	return ss.str();
+}
+
 void btnSave(Model& Data)
 {
-    std::cout << "btnSave(.) ! \n";
+    // std::cout << "btnSave(.) ! \n";
 
-    int n = Data.LObjets.size();
-
-    std::string nom_fichier = "sauvegarde.json";
+    std::string nom_fichier = "sauvegarde.csv";
     std::ofstream ss(nom_fichier);
 
     if (!ss.is_open()) {
-        std::cerr << "Erreur en ouvrant (écriture) : `" << nom_fichier << "` .\n";
+        std::cerr <<"Erreur en ouvrant (écriture) : `" << nom_fichier <<"` .\n";
         return;
     }
 
-    ss << "{\n";
-    for (int i = 0; i < n; i++)
-	{
-        ss << "\"" << i+1 << "\":{";
-		ss << Data.LObjets.at(i)->Serialize();
-        ss << "}";
-        if (i < n-1) {
-            ss << ",";
-        }
-        ss << "\n";
-	}
-    ss << "}\n";
+    ss << saveToString(Data);
 
     ss.close();
+
     std::cout << "Sauvegarde effectuée dans `./" << nom_fichier << "`. \n";
 
     return;
 }
 
+
+
+void loadFromString(Model& Data, std::string input)
+{
+	const bool VERBOSE = false;
+
+    ////// réinitialiser la liste d'objets
+	Data.LObjets = {};
+
+	////// analyse deu fichier
+    size_t positionA, distanceB, distanceType;
+    std::string extrait, type;
+
+	// saut de la première ligne
+    positionA = input.substr(        0, std::string::npos).find_first_of('\n')+1;
+
+	// ligne par ligne
+	while (positionA < input.length())
+	{
+		distanceB = input.substr(positionA, std::string::npos).find_first_of('\n')+1;
+
+
+		extrait = input.substr(positionA, distanceB);
+		// std::cout << "extrait = " << extrait << "\n";
+
+		distanceType = input.substr(positionA, std::string::npos).find_first_of(';');
+		type = input.substr(positionA, distanceType);
+		// std::cout << "type = " << type << "\n";
+
+
+		// ajout
+		if (type == "ObjRectangle")
+		{
+			if (VERBOSE) std::cout << "- Ajout d'un ObjRectangle ; \n";
+			// std::shared_ptr<ObjRectangle> obj = make_shared<ObjRectangle>(extrait);
+			auto obj = make_shared<ObjRectangle>(extrait);
+			Data.LObjets.push_back(obj);
+		}
+		else if (type == "ObjSegment")
+		{
+			if (VERBOSE) std::cout << "- Ajout d'un ObjSegment ; \n";
+			auto obj = make_shared<ObjSegment>(extrait);
+			Data.LObjets.push_back(obj);
+		}
+		else if (type == "ObjCercle")
+		{
+			if (VERBOSE) std::cout << "- Ajout d'un ObjCercle ; \n";
+			auto obj = make_shared<ObjCercle>(extrait);
+			Data.LObjets.push_back(obj);
+		}
+
+		// incrémentation
+		// std::cout << "positionA = " << positionA << ", distanceB = " << distanceB << ".\n";
+		positionA += distanceB;
+	}
+	return;
+}
+
 void btnLoad(Model& Data)
 {
-    std::cout << "btnLoad(.) ! \n";
-    return;
+    // std::cout << "btnLoad(.) ! \n";
+
+	saveCurrentState(Data);
+
+	////// lecture de fichier
+    std::string nom_fichier = "sauvegarde.csv";
+    std::ifstream ss(nom_fichier);
+
+    if (!ss.is_open()) {
+        std::cerr << "Erreur en ouvrant (lecture) : `" << nom_fichier <<"` .\n";
+        return;
+    }
+	std::cout << "Chargement de la sauvegarde (`" << nom_fichier <<"`) : \n";
+
+    std::stringstream buffer;
+    buffer << ss.rdbuf();  // lire le fichier en entier
+    std::string input = buffer.str();  // fichier converti en std::string
+    ss.close();
+
+
+
+	loadFromString(Data, input);
+
+
+
+	std::cout << "Fin du chargement.\n";
+	return;
+}
+
+
+
+void saveGivenState(Model& Data, const std::string state)
+{
+	if (!Data.historique.empty())
+	{
+		std::string last_state = Data.historique.back();
+
+		if (state == last_state)
+		{
+			std::cout << "DUPLICATION \n";
+			return;
+		}
+		// ne pas ajouter un état si l'état précédent est identique
+	}
+
+	Data.historique.push_back(state);
+
+	std::cout << "État sauvegardé. ";
+	std::cout << "# sauvegardes : " << Data.historique.size() << " \n";
+	return;
+}
+
+void saveCurrentState(Model& Data)
+{
+	std::string current_state = saveToString(Data);
+
+	saveGivenState(Data, current_state);
+
+	// std::cout << "État actuel sauvegardé. \n";
+	return;
+}
+
+void btnUndo(Model& Data)
+{
+	if (Data.historique.empty())
+	{
+		std::cout << "L'historique est vide ! ";
+		std::cout << "# sauvegardes : " << Data.historique.size() << " \n";
+		return;
+	}
+
+	std::string last_state = Data.historique.back();
+
+	loadFromString(Data, last_state);
+
+	Data.historique.pop_back();
+
+	std::cout << "État précédent chargé. ";
+	std::cout << "# sauvegardes : " << Data.historique.size() << " \n";
+
+	return;
 }
 
 
@@ -285,29 +453,40 @@ void initApp(Model& App)
 	x += s;
 
     // Étape 8
-    auto BD = make_shared<Button>("Outil Save", V2(x, 0), V2(s, s), "new/outil_save2.png", btnSave);
+    auto BD = make_shared<Button>("Save", V2(x, 0), V2(s, s), "new/outil_save2.png", btnSave);
 	App.LButtons.push_back(BD);
 	x += s;
 
-    auto BE = make_shared<Button>("Outil Load", V2(x, 0), V2(s, s), "new/outil_load2.png", btnLoad);
+    auto BE = make_shared<Button>("Load", V2(x, 0), V2(s, s), "new/outil_load2.png", btnLoad);
 	App.LButtons.push_back(BE);
+	x += s;
+
+	// Étape 9
+	auto BF = make_shared<Button>("Undo", V2(x, 0), V2(s, s), "new/edit-undo2.png", btnUndo);
+	App.LButtons.push_back(BF);
 	x += s;
 
 	// Étape 10
 	auto BG = make_shared<Button>("Outil Édition des points", V2(x, 0), V2(s, s), "new/outil_édition2.png", btnEditionPoint);
 	App.LButtons.push_back(BG);
-	x += s;
+  x += s;
 
 
 	// put two objets in the scene
+
+	saveCurrentState(App);
 
 	ObjAttr DrawOpt1 = ObjAttr(Color::Cyan, true, Color::Green, 6);
 	auto newObj1 = make_shared<ObjRectangle>(DrawOpt1, V2(100, 100), V2(300, 200));
 	App.LObjets.push_back(newObj1);
 
+	saveCurrentState(App);
+
 	ObjAttr DrawOpt2 = ObjAttr(Color::Red, true, Color::Blue, 5);
 	auto newObj2 = make_shared<ObjRectangle>(DrawOpt2, V2(500, 300), V2(600, 600));
 	App.LObjets.push_back(newObj2);
+
+	saveCurrentState(App);
 
 	ObjAttr DrawOpt3 = ObjAttr(Color::Blue, true, Color::Red, 5);
 	auto newObj3 = make_shared<ObjCercle>(DrawOpt3, V2(600, 700), V2(650, 700));
@@ -322,6 +501,15 @@ void initApp(Model& App)
 void processEvent(const Event& Ev, Model & Data)
 {
 	Ev.print(); // Debug
+
+	std::string before, after;
+
+	// if (Ev.Type == EventType::MouseUp)
+	if (Ev.Type != EventType::MouseMove)
+	{
+		before = saveToString(Data);
+	}
+
 
 	// MouseMove event updates x,y coordinates
 	if (Ev.Type == EventType::MouseMove)
@@ -347,6 +535,14 @@ void processEvent(const Event& Ev, Model & Data)
 	Data.currentTool->processEvent(Ev,Data);
 
 
+	if (Ev.Type != EventType::MouseMove)
+	{
+		after = saveToString(Data);
+		if (before != after)
+		{
+			saveGivenState(Data, before);
+		}
+	}
 }
 
 

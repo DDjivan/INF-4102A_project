@@ -30,28 +30,91 @@ public :
 
 		std::stringstream ss;
 
-		ss << "\"drawInfo_\":{";
+		ss << "";
 
 		R = drawInfo_.borderColor_.R;
 		G = drawInfo_.borderColor_.G;
 		B = drawInfo_.borderColor_.B;
 		A = drawInfo_.borderColor_.A;
-		ss << "\"borderColor_\":\"(" << R << "," << G << "," << B << "," << A << ")\",";
+		ss << "(" << R << "," << G << "," << B << "," << A << ");";
 
 		R = drawInfo_.interiorColor_.R;
 		G = drawInfo_.interiorColor_.G;
 		B = drawInfo_.interiorColor_.B;
 		A = drawInfo_.interiorColor_.A;
-		ss << "\"interiorColor_\":\"(" << R << "," << G << "," << B << "," << A << ")\",";
+		ss << "(" << R << "," << G << "," << B << "," << A << ");";
 
-		ss << "\"thickness_\":\"" << drawInfo_.thickness_ << "\",";
+		ss << "" << drawInfo_.thickness_ << ";";
 
-		ss << "\"isFilled_\":\"" << drawInfo_.isFilled_ << "\"";
+		ss << "" << drawInfo_.isFilled_ << ";";
 
-		ss << "}";
+		ss << "";
 
 		return ss.str();
 	}
+
+
+
+	template <typename T>
+	T stringToValue(const std::string& input, const int index)
+	{
+		size_t posA, distB;
+
+		posA = 0;
+		distB = input.substr(posA, std::string::npos).find_first_of(';') +1;
+
+		for (int i = 0; i < index; i++)
+		{
+			posA += distB;
+			distB = input.substr(posA, std::string::npos).find_first_of(';') +1;
+		}
+
+		std::string value = input.substr(posA, distB-1);
+		// std::cout << "index = " <<  index << ", value = " << value << "\n";
+
+		// throw std::invalid_argument("DEBUG ! \n");
+
+
+
+		// if constexpr (std::is_same<T, std::string>::value) {
+		// 	return value;
+		// }
+		if constexpr (std::is_same<T, int>::value) {
+			return std::stoi(value);
+		}
+		// if (std::is_same<T, float>::value) {
+		// 	return std::stof(value);
+		// }
+		if constexpr (std::is_same<T, bool>::value) {
+			return (value == "1");
+		}
+		if constexpr (std::is_same<T, Color>::value) {
+			float R, G, B, A;
+			// sscanf prend un const char* pour le 1er arg
+    		sscanf(value.c_str(), "(%f,%f,%f,%f)", &R, &G, &B, &A);
+			return Color(R, G, B, A);
+		}
+		if constexpr (std::is_same<T, V2>::value) {
+			int x, y;
+    		sscanf(value.c_str(), "(%d,%d)", &x, &y);
+			return V2(x, y);
+		}
+
+		throw std::invalid_argument("Type non pris en charge ! \n");
+	}
+
+	ObjAttr extractDrawInfo(const std::string& input)
+	{
+		ObjAttr drawInfo;
+
+		drawInfo.borderColor_ = stringToValue<Color>(input, 1);
+		drawInfo.interiorColor_ = stringToValue<Color>(input, 2);
+		drawInfo.thickness_ = stringToValue<int>(input, 3);
+		drawInfo.isFilled_ = stringToValue<bool>(input, 4);
+
+		return drawInfo;
+	}
+
 };
 
 
@@ -87,15 +150,24 @@ public :
     {
         std::stringstream ss;
 
-        ss << "\"ObjRectangle\":{";
+        ss << "ObjRectangle;";
 
-		ss << drawInfoSerialize() << ",";
+		ss << drawInfoSerialize() << "";
 
-		ss << "\"P1_\":\"" << P1_ << "\",";
-		ss << "\"P2_\":\"" << P2_ << "\"";
-		ss << "}";
+		ss << "" << P1_ << ";";
+		ss << "" << P2_ << ";";
+		ss << "";
 
         return ss.str();
+    }
+
+
+	ObjRectangle(const std::string& serializedString)
+    {
+        drawInfo_ = extractDrawInfo(serializedString);
+        P1_ = stringToValue<V2>(serializedString, 5);
+        P2_ = stringToValue<V2>(serializedString, 6);
+		return;
     }
 };
 
@@ -128,15 +200,23 @@ public:
     {
         std::stringstream ss;
 
-        ss << "\"ObjSegment\":{";
+        ss << "ObjSegment;";
 
-		ss << drawInfoSerialize() << ",";
+		ss << drawInfoSerialize() << "";
 
-		ss << "\"P1_\":\"" << P1_ << "\",";
-		ss << "\"P2_\":\"" << P2_ << "\"";
-		ss << "}";
+		ss << "" << P1_ << ";";
+		ss << "" << P2_ << ";";
+		ss << "";
 
         return ss.str();
+    }
+
+	ObjSegment(const std::string& serializedString)
+    {
+        drawInfo_ = extractDrawInfo(serializedString);
+        P1_ = stringToValue<V2>(serializedString, 5);
+        P2_ = stringToValue<V2>(serializedString, 6);
+		return;
     }
 };
 
@@ -178,14 +258,22 @@ public:
     {
         std::stringstream ss;
 
-        ss << "\"ObjCercle\":{";
+        ss << "ObjCercle;";
 
-		ss << drawInfoSerialize() << ",";
+		ss << drawInfoSerialize() << "";
 
-		ss << "\"P1_\":\"" << P1_ << "\",";
-		ss << "\"P2_\":\"" << P2_ << "\"";
-		ss << "}";
+		ss << "" << P1_ << ";";
+		ss << "" << P2_ << ";";
+		ss << "";
 
         return ss.str();
+    }
+
+	ObjCercle(const std::string& serializedString)
+    {
+        drawInfo_ = extractDrawInfo(serializedString);
+        P1_ = stringToValue<V2>(serializedString, 5);
+        P2_ = stringToValue<V2>(serializedString, 6);
+		return;
     }
 };
