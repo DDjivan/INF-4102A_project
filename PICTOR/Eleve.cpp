@@ -22,7 +22,7 @@ void saveCurrentState(Model& Data);
 int main(int argc, char* argv[])
 {
 	std::cout << "Press ESC to abort" << endl;
-	Graphics::initMainWindow("Pictor", V2(1200, 800), V2(200, 200));
+	Graphics::initMainWindow("Pictor", V2(1280, 800), V2(200, 200));
 }
 
 void bntToolSegmentClick(Model& Data)   { Data.currentTool = make_shared<ToolSegment>(); }
